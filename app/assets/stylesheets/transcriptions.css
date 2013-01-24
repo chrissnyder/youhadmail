@@ -1,0 +1,570 @@
+
+
+/* Nav */
+
+ul.transcribe-page-nav {
+	position:absolute;
+	left:0;
+	top:0;
+	list-style: none;
+}
+
+ul.transcribe-page-nav li {
+	line-height:1px;
+}
+
+ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
+	box-shadow: 3px 3px 4px #3C3C3C;
+}
+
+/* Transcribe Area */
+
+#transcription-area {
+	width:1000px;
+	margin:20px auto;
+	-moz-box-shadow: 3px 3px 4px #000;
+	-webkit-box-shadow: 3px 3px 4px #000;
+	box-shadow: 3px 3px 4px #000;
+}
+
+.transcribe-marker {
+	position: absolute;
+	z-index: 3;
+}
+
+.transcribe-marker .transcribe-color-overlay {
+	/* another: */
+	background-color: #fff;
+	opacity:0.75;
+
+	/* one option: */
+	background-color: lime;
+	opacity:0.2;
+
+	height:100%;
+}
+
+.transcribe-marker-controls {
+	display:none;
+	left:0px;
+	top:-2em;
+	height:1em;
+	padding: 0.5em 5px;
+	position:absolute;
+	background-color:white;
+	border:solid black 1px;
+}
+
+.transcribe-marker-controls a {
+	padding:0 15px;
+	color:#aaa;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+.transcribe-marker-controls a:hover {
+	color:#000;
+}
+
+.transcribe-marker:hover .transcribe-marker-controls {
+	display:block;
+}
+
+.hocr-line {
+	background-color:yellow;
+	opacity:0.15;
+	position:absolute;
+	z-index:2;
+	display:none;
+}
+
+.hocr-line:hover {
+	opacity:0.5;
+}
+
+.hocr-zoomed-line:hover {
+	opacity:0.15;
+}
+
+.hocr-line.selected {
+	opacity:0.2;
+	z-index:10;
+}
+
+.transcribe-line-bounding-box {
+	display:none;
+	position:absolute !important; /* if resizable, don't allow jquery ui to set display:relative */
+	z-index:5;
+	border:solid lime 2px;
+}
+
+.transcribe-line-bounding-box .ui-icon-circle-close {
+	position:absolute;
+	right:-10px;
+	top:-10px;
+}
+
+.transcribe-line-bounding-box .transcribe-color-overlay {
+	background-color:lime;
+	opacity:0.5;
+	position:absolute;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+}
+
+.transcribe-line-bounding-box:hover {
+}
+
+.transcribe-line-bounding-box-controls {
+	position:absolute;
+	background-color:white;
+	border:solid black 1px;
+	font-size: 14px;
+	height:2em;
+	top:-2.3em;
+	width:230px;
+}
+
+.transcribe-line-bounding-box-controls a {
+	padding-right:10px;
+	color: #777;
+	font-weight: bold;
+	line-height: 30px;
+	padding: 0.5em 10px;
+	text-decoration: none;
+}
+
+.transcribe-line-bounding-box-controls a:hover {
+	color:#000;
+}
+
+.transcribe-line-bounding-box-message {
+	color:#aaa;
+	font-size:12px;
+	padding:0 20px 0 10px;
+}
+
+.transcribe-image-holder {
+	position:absolute;
+	right:0;
+	top:0;
+}
+
+.transcribe-image-holder img {
+	display:none;
+}
+
+#transcribe-zoom-box img {
+	display:block;
+}
+
+
+
+/* Transcribe modal */
+
+div.transcribe-modal {
+	display:none;
+	position:absolute;
+	cursor:move;
+	border:solid green 1px;
+}
+
+div.transcribe-modal h1 {
+	color:black;
+	font-size:20px;
+	padding-bottom:10px;
+}
+
+div.transcribe-modal h1 span {
+	padding-left:20px;
+	color:#777;
+	font-size:15px;
+}
+
+div.transcribe-form-top-bar {
+	padding:20px 0 0 20px
+}
+
+div.transcribe-form-holder {
+	position:absolute;
+	top:0;
+	background-color:#FFF;
+	border:solid #555 1px;
+	box-shadow: 3px 3px 4px #3c3c3c;
+}
+
+div.transcribe-form {
+	padding: 0 20px 20px 20px;
+}
+
+ul.transcribe-types {
+	list-style:none;
+}
+
+ul.entity-types li {
+	cursor:pointer;
+	padding:4px 0;
+	font-size:15px;
+}
+
+ul.entity-types li:hover {
+	background-color:#efefef;
+}
+
+ul.entity-types li .entity-type-choice-examples {
+	color:#888;
+	padding-left:50px;
+	opacity:0;
+}
+
+ul.entity-types li:hover .entity-type-choice-examples {
+	opacity:1;
+}
+
+.transcribe-modal-close-button {
+	font-size:12px;
+	padding: 10px 10px 0 0;
+	position: absolute;
+	top:0;
+	right:0;
+}
+
+div.transcribe-field-row {
+	padding-bottom:8px;
+}
+
+div.transcribe-field-row label {
+	display:block;
+	padding-bottom:2px;
+}
+
+div.transcribe-field-row input {
+	max-width:45%;
+	margin-bottom:5px;
+}
+
+div.transcribe-form-help {
+	float:right;
+	width:43%;
+	font-size:14px;
+	color:#555;
+	background-color:#efefef;
+	padding:20px;
+}
+
+div.transcribe-form-help h2 {
+	margin-top:10px;
+	margin-bottom:5px;
+}
+
+div.transcribe-form-help li {
+	padding-bottom:3px;
+	font-size:12px;
+}
+
+div.transcribe-form-help a {
+	display:block;
+	margin-top:20px;
+	color:black;
+}
+
+.darkening-overlay {
+	width:100%;
+	height:100%;
+	background-color:black;
+	opacity:0.5;
+	z-index:99;
+	position:absolute;
+	top:0;
+	left:0;
+	display:none;
+}
+
+#transcribe-zoom-box-holder .ui-resizable-ne,
+#transcribe-zoom-box-holder .ui-resizable-se, 
+#transcribe-zoom-box-holder .ui-resizable-sw,
+#transcribe-zoom-box-holder .ui-resizable-nw {
+	border:solid black 1px;
+	background-color:white;
+}
+
+#transcribe-zoom-box-holder .ui-resizable-se {
+	width:10px;
+	height:10px;
+	background-image:none;
+	right:-5px;
+	bottom:-5px;
+}
+
+#transcribe-zoom-box-holder {
+	position: absolute;
+	background-color:#777;
+}
+
+#transcribe-zoom-box {
+	position: absolute;
+	overflow:hidden;
+	width:100%;
+	height:100px;
+	border:solid #555 1px;
+}
+
+.ui-resizable-handle {
+	z-index:1;
+}
+
+.transcribe-modal-containment {
+	position:absolute;
+	border:solid red 1px;
+	display:none;
+}
+
+.save-button {
+	margin-top:10px;
+}
+
+
+
+
+
+/* Completed Playbill View */
+
+#transcription-instructions {
+	padding-bottom:20px;
+}
+
+#transcriptions-viewer {
+	position:fixed;
+	top:20px;
+	left:100%;
+	margin-left: -340px;
+	display:block;
+	background: #EEE;
+	border:2px solid #2c2c2c;
+	padding:10px;
+	z-index: 99;
+	-moz-box-shadow: 3px 3px 4px #3c3c3c;
+	-webkit-box-shadow: 3px 3px 4px #3c3c3c;
+	box-shadow: 3px 3px 4px #3c3c3c;
+}
+
+#transcriptions-viewer h3 {
+	margin-bottom: 5px;
+	font-size: 18px;
+}
+
+
+.completed-playbill {
+	box-shadow: inset 1px 1px 2px #ccc;
+	border:solid #aaa 1px;
+	background-color:white;
+	margin-bottom: 5px;
+	padding: 10px;
+	font-size: 14px;
+	overflow: hidden;
+	-max-height:200px;
+	overflow:auto;
+	display:none;
+}
+
+.completed-playbill h1 {
+	font-size:20px;
+	color:#777;
+}
+
+.completed-playbill ul {
+	list-style:none;
+}
+
+.completed-playbill li {
+	margin-bottom:20px;
+}
+
+.completed-playbill li .entity-label {
+	font-weight:bold;
+	padding-right:10px;
+}
+
+.completed-playbill li .placeholder {
+	-color:#777;
+	color:#b55;
+}
+
+.completed-playbill li ul {
+	margin-top:10px;
+}
+
+.completed-playbill li li {
+	margin-bottom:5px;
+}
+
+.completed-playbill a { 
+	display:block;
+	width:30px;
+	font-size:12px;
+	font-family:sans-serif;
+	font-style:none;
+	color:#aaa;
+	float:right;
+	margin-left:10px;
+}
+
+.completed-playbill a:hover { 
+	color: #000;
+}
+
+/* help */
+.transcribe-full-help {
+	padding: 0 20px 40px 20px;
+}
+
+.transcribe-full-help p {
+	padding: 10px 0;
+	line-height: 1.6em;
+}
+
+.transcribe-full-help h2 {
+	margin-top:1em;
+}
+
+.transcribe-full-help li {
+	padding-top:10px;
+}
+
+#save-instructions {
+	padding-top:40px;
+}
+
+#done-button-holder {
+	padding-bottom: 10px;
+	text-align:right;
+}
+
+#done-button {
+	font-size: 14px;
+	line-height:20px;
+	font-weight:bold;
+}
+
+
+
+
+
+
+
+
+/* Inline Tutorial */
+
+.inline-tutorial-holder {
+	background-color: #505050;
+	border: 3px solid #303030;
+	border-radius: 5px 5px 5px 5px;
+	box-shadow: 0 3px 6px #000000;
+	color: #FFFFFF;
+	display: none;
+	font: 12px/15px Prelude,Arial,sans-serif;
+	height: 160px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	width: 300px;
+	z-index: 10000;
+}
+
+.inline-tutorial-box {
+	height: 100%;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	top: 0;
+	width: 100%;
+}
+
+.inline-tutorial-box h1 {
+	color: #FFFFFF;
+	font: 15px/15px Prelude,Arial,sans-serif;
+	left: 5px;
+	margin-left: 10px;
+	margin-top: 10px;
+	text-transform: uppercase;
+	top: 10px;
+}
+
+.inline-tutorial-box .tutorial-content {
+	padding:15px 10px 0 10px;
+	line-height:18px;
+	font-size:13px;
+}
+
+.inline-tutorial-box .tutorial-content p {
+	padding-bottom:10px;
+}
+
+.inline-tutorial-box .tutorial-controls {
+	background-color: #303030;
+	bottom: 10px;
+	font: 10px/20px Prelude,Arial,sans-serif;
+	height: 20px;
+	position: absolute;
+	text-transform: uppercase;
+	width: 100%;
+}
+
+.inline-tutorial-box .tutorial-controls span {
+	display:block;
+	width:50px;
+	float:right;
+	text-align:right;
+	cursor:pointer;
+	height:20px;
+	line-height:20px;
+	padding-right:10px;
+	font-size:11px;
+}
+
+.inline-tutorial-arrow {
+	height: 0;
+	position: absolute;
+	width: 0;
+}
+
+.arrow-bottom-left, .arrow-bottom-right {
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	border-top: 20px solid #303030;
+	bottom:-20px;
+}
+
+.arrow-bottom-right, .arrow-top-right {
+	right:20px;
+}
+
+.arrow-bottom-left, .arrow-top-left {
+	left:20px;
+}
+
+.arrow-top-left, .arrow-top-right {
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;
+	border-bottom: 20px solid #303030;
+	top:-20px;
+}
+
+.arrow-right {
+	right:-20px;
+	top:20px;
+	border-bottom: 20px solid transparent;
+	border-left: 20px solid #303030;
+	border-top: 20px solid transparent;
+}
+
+.arrow-left {
+	left:-20px;
+	top:20px;
+	border-right: 20px solid #303030;
+	border-bottom: 20px solid transparent;
+	border-top: 20px solid transparent;
+}

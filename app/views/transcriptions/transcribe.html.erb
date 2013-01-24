@@ -1,0 +1,204 @@
+<% content_for :head do %>
+<script>
+
+var App = function() {
+	this.assetCollectionUri = '/asset_collections/<%=@collection.id%>.json';
+	this.userTranscriptionUri = '/transcriptions/by_user/<%=@collection.id%>.json';
+}
+App.prototype = {
+	init											: function() {
+															this._fetchData(this._handleData.bind(this));
+
+															$("#transcriptions-viewer").draggable()
+	},
+
+	_handleData								: function(collection, template, transcription) {
+		
+															this.collection = collection;
+															this.template = template;
+
+															this.playbill_view = new PlaybillView('.completed-playbill', this.template);
+
+															this.editor = this._createEditor(this.collection, this.template);
+
+															this.playbill_view.editor = $("#transcription-area").data('transcribe');
+
+															if(transcription)
+																this.editor.setAnnotations(transcription.annotations);
+
+															this.tutorial = this._createTutorial();
+
+															$('#done-button').attr('disabled','disabled');
+
+	},
+
+	_fetchData								: function(callback) {
+
+															// We need to collect three things asynchronously; don't call-back until we have all three
+															var collection = false;
+															var template = false;
+															var transcription = false;
+															var transcriptionFetched = false;
+
+															var _callback = function() {
+																if(collection && transcriptionFetched)
+																	callback(collection, template, transcription);
+															}
+
+															this._fetchAssetCollection((function(_collection) {
+
+																this._fetchTemplate(_collection.template_id, (function(_template) {
+	
+																	collection = _collection;
+																	template = _template;
+
+																	_callback();
+
+																}).bind(this));
+
+															}).bind(this));
+
+															$.getJSON(this.userTranscriptionUri, function(trans) { 
+																transcription = trans;
+																transcriptionFetched = true;
+																_callback();
+															});
+	},
+
+	_fetchAssetCollection 			: function(callback) {
+																$.getJSON(this.assetCollectionUri, function(collection) { callback(collection); })
+	},
+
+	_fetchTemplate							: function(template_id, callback) {
+
+																$.getJSON('/templates/' + template_id, function(template) { callback(template); });
+																
+	},
+
+	_createEditor								: function(collection, template, annotations) {
+
+																var editor = $("#transcription-area").transcribe({
+
+																	template 							: template,
+																	assets								: collection.assets,
+																	annotations						: annotations,
+
+																	zoomBoxWidth					: 600,
+																	zoomBoxHeight					: 200,
+																	annotationBoxWidth		: 760,
+
+																	additionalSaveParams	: {
+																														user_id: "<%= @user.id %>",
+																														collection_id: "<%= @collection.id %>"
+																													},
+
+																	zoomLevel							: 1.5,
+
+																	submitURL 						: "/transcriptions/",
+																	doneButton						: $("#done-button"),
+																	onSaveSuccess					: this._saveSuccess.bind(this),
+
+																	onAnnotationAdded			: this._annotationAdded.bind(this),
+																	onAnnotationUpdated		: this._annotationUpdated.bind(this),
+																	onAnnotationRemoved		: this._annotationRemoved.bind(this),
+
+																	authenticity_token: "<%=session["_csrf_token"]%>"
+																});
+																// return editor;
+																return $("#transcription-area").data('transcribe');
+	},
+
+	_createTutorial							: function() {
+
+																// Begin tutorial
+																return (new InlineTutorial([
+																	{
+																		target: 	'#transcription-area',
+																		offset: 	{x: 'center', y: 300},
+																		title:		'Welcome!',
+																		content: 	"This is a historical NY playbill.\nIt's full of fascinating information. We need your help extracting it.",
+																		arrow: 		false
+																	},
+																	{
+																		target: 	'.transcribe-image-holder',
+																		offset: 	{x: 250, y: 300},
+																		title:		'Identify the Entities',
+																		content: 	"Playbills have a number of entities we want to extract like show title, theatre name, and cast list.",
+																		arrow: 		'bottom-right'
+																	},
+																	{
+																		target: 	'.transcribe-page-nav',
+																		offset: 	{x: 'center', y: 320},
+																		title:		'But wait, there\'s more',
+																		content: 	"Playbills consist of multiple pages. Although most of the pertinent features typically appear on the first page, be sure to view the other pages.",
+																		arrow: 		'top-left'
+																	},
+																	{
+																		target: 	'#transcriptions-viewer',
+																		offset: 	{x: 10, y: 'center'},
+																		title:		'Check Your Progress',
+																		content: 	"As you transcribe entities, they'll appear here..",
+																		arrow: 		'right'
+																	},
+																	{
+																		target: 	'#transcription-area',
+																		offset: 	{x: 'center', y: 300},
+																		title:		'Thanks',
+																		content: 	"Contextual help is provided throughout the tool to help you transcribe.",
+																		arrow: 		false
+																	},
+																])).start();
+
+	},
+
+
+	_annotationAdded						: function(ann) {
+																this.playbill_view.addEntity(ann);
+																$('#done-button').attr('disabled',false);
+	},
+	
+	_annotationUpdated					: function(ann) {
+																this.playbill_view.editEntity(ann);
+																$('#done-button').attr('disabled',false);
+	},
+	
+	_annotationRemoved					: function(ann) {
+																this.playbill_view.removeEntity(ann);
+																$('#done-button').attr('disabled',false);
+	},
+
+	_saveSuccess								: function() {
+																$('#done-button').attr('disabled','disabled');
+	}
+};
+
+$(document).ready(function(){
+
+	(new App()).init(); 
+	
+});
+
+</script>
+
+<% end %>
+
+
+<!-- page div is main transcription item -->
+<div id="transcription-area"></div>
+
+
+<div id="footer"></div>
+
+<div id="transcriptions-viewer">
+	<h3>Transcriptions</h3>
+	<p id="transcription-instructions">Click and drag over the document to add transcriptions.</p>
+
+	<div class="completed-playbill"></div>
+
+	<p id="save-instructions">Click "Save" to commit your transcriptions.</p>
+  <div id="done-button-holder"><button id ="done-button">Save</button></div>
+
+	<p id="next-document"><a href="/transcriptions/next">Next Playbill</a></p>
+
+</div>
+

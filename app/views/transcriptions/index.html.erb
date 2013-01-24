@@ -1,0 +1,14 @@
+
+<ul>
+<% @transcriptions.each do |transcription| %>
+
+	<li><%= image_tag(transcription.asset_collection.assets.first.uri, :width=>150) %> 
+		Anon.<%= transcription.user.id %> identified <%= transcription.annotations.size %> entitie(s)
+		in a <%= transcription.asset_collection.assets.size %> page playbill.
+	</li>
+
+<% end %>
+</ul>
+
+<div id="footer"></div>
+
