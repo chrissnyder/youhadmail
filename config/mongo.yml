@@ -8,7 +8,6 @@ test:
   <<: *global_settings
 
 production:
-  host: 127.0.0.1
-  database: scribe-production
+	uri: <%= ENV['MONGO_URI'] %>
 
   <<: *global_settings
