@@ -4,10 +4,8 @@ development: &global_settings
   port: 27017
 
 test:
-  database: scribe-test
+  database: transcribe-test
   <<: *global_settings
 
 production:
-	uri: <%= ENV['MONGO_URI'] %>
-
-  <<: *global_settings
+  uri: <%= ENV['MONGO_URI'] %>
