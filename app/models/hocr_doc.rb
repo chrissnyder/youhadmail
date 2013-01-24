@@ -107,22 +107,26 @@ class HocrDoc
 
 	def ocr_asset_path type
 		
-		Logger.new('log/development.log').debug "ocr asset path: #{@asset_key}"
-		
-		result_path = "tmp/#{@asset_key}.#{type}"
-		image_path = source_image_path
+		path = "tmp/#{@asset_key}.#{type}"
 
-		unless FileTest.exists?(result_path)
-			Logger.new('log/development.log').debug "wrote to #{image_path}"
+		unless false && FileTest.exists?(path)
 
-			cmd = type == 'box' ? 'makebox' : 'hocr'
-			system "tesseract", image_path, '/tmp/out', 'batch.nochop', cmd
+			s3 = AWS::S3.new(
+				:access_key_id => Transcribe::Application.config.aws_access_key, 
+				:secret_access_key => Transcribe::Application.config.aws_secret_key
+			)
+			box_dir = 'training/box'
+			m = @uri.match /\/(\d+\/\d+(\.\d+)?)\.jpg$/
 
-			ext = type == 'box' ? 'box' : 'html'
-			FileUtils.cp "/tmp/out.#{ext}", result_path
+			remote_path = "tesseract/#{m[1]}.#{type}"
+			remote_file = s3.buckets['programs-cropped.nypl.org'].objects[remote_path]
+
+			local_file = File.open(path,'wb') do |f|
+				f.puts remote_file.read
+			end
 		end
 
-		result_path
+		path
 	end
 
 	def parse_bbox coords

@@ -62,5 +62,8 @@ module Transcribe
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+		config.aws_access_key = ENV['AWS_ACCESS_KEY']
+		config.aws_secret_key = ENV['AWS_SECRET_KEY']
   end
 end
