@@ -168,7 +168,6 @@ div.transcribe-modal {
 	display:none;
 	position:absolute;
 	cursor:move;
-	border:solid green 1px;
 }
 
 div.transcribe-modal h1 {
@@ -317,7 +316,6 @@ div.transcribe-form-help a {
 
 .transcribe-modal-containment {
 	position:absolute;
-	border:solid red 1px;
 	display:none;
 }
 

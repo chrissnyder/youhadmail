@@ -47,7 +47,7 @@ $.widget("ui.transcribe", {
 
 	editAnnotation					: function (annotation_id) {
 														var annotation = this.annotations[annotation_id];
-														this.showAsset(annotation.asset_index);
+														this.showAsset(annotation.asset_id);
 														this.editing_id = annotation_id;
 
 														this._trigger('anotationEdited',{},"message editing"+annotation_id)
@@ -102,10 +102,13 @@ $.widget("ui.transcribe", {
 														}
 	},
 
-	showAsset								: function(index) {
+	showAsset								: function(id) {
 
-														if(index < this.assets.length) {
-															this.assetIndex = index;
+														for(var i=0;i<this.assets.length;i++) {
+
+															if(this.assets[i].id != id) continue;
+
+															this.assetIndex = i;
 
 															$('.transcribe-image-holder > img').hide();
 															$('.transcribe-image-holder .hocr-line').hide();
@@ -142,6 +145,8 @@ $.widget("ui.transcribe", {
 																hocrLines[i].element.show();
 																hocrLines[i].zoomElement.show();
 															}
+
+															break;
 														}
 	},
 
@@ -259,7 +264,7 @@ $.widget("ui.transcribe", {
 															var _asset = this.assets[i];
 															var img = $('<img/>').attr('src',_asset.uri).css('width',this.options.navWidth);
 															var li = $('<li></li>').css('padding-bottom',this.options.navPadding.bottom)
-																.append(img.click(this.showAsset.bind(this, i)));
+																.append(img.click(this.showAsset.bind(this, _asset.id)));
 															ul.append(li);
 														}
 														this.element.append(ul);
@@ -351,7 +356,7 @@ $.widget("ui.transcribe", {
 
 
 														// Show first image
-														this.showAsset(0);
+														this.showAsset(this.assets[0].id);
 
 	},
 
