@@ -90,7 +90,7 @@ class TranscriptionsController < ApplicationController
 		typed_term = params[:term]
 
 		common_terms = Annotation
-			.where(:entity_id => params[:entity_id], 'data.' + field_key => /#{typed_term}.*/)
+			.where(:entity_id => params[:entity_id], 'data.' + field_key => /#{Regexp.escape(typed_term)}.*/)
 			.fields(:data).all
 
 		format.js { render :nothing => true} if common_terms.nil?
