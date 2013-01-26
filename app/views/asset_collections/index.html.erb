@@ -1,12 +1,16 @@
 
 <div id="content">
 
-<ul class="collection-list">
-<% @collections .each do |collection| %>
+<h1>Playbills</h1>
 
-	<li>
+<ul class="collection-list">
+<% count = 0 %>
+<% @collections.each do |collection| %>
+
+	
+	<li<% if count % 4 == 0 %> style="clear:left;"<% end %>>
 		<a href="/transcriptions/transcribe/<%= collection.id %>">
-			<%= image_tag(collection.assets.first.uri, :width=>150) %> 
+			<%= image_tag(collection.assets.first.thumb_uri) %> 
 		</a>
 		<div class="playbill-meta">
 			<div><%= collection.assets.size %> page<%= collection.assets.size!=1?'s':'' %></div>
@@ -15,6 +19,7 @@
 		<a class="transcribe-link" href="/transcriptions/transcribe/<%= collection.id %>">Transcribe</a>
 	</li>
 
+	<% count += 1 %>
 <% end %>
 </ul>
 

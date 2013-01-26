@@ -1,9 +1,7 @@
 class AssetCollection
   include MongoMapper::Document
 
-  key :title, String, :required => true
-  key :author, String, :required => false
-  key :extern_ref, String
+  key :uri, String
   key :template_id, ObjectId
 
   key :classification_count, Integer , :default => 0
@@ -51,5 +49,13 @@ class AssetCollection
     self.save 
   end
 
+	def to_json(options = {})
+		assets.sort_by! { |asset| asset.order }
+		{
+			:uri => uri,
+			:template_id => template_id,
+			:assets => assets.map {|a| a.to_json(options) }
+		}
+	end
 
 end

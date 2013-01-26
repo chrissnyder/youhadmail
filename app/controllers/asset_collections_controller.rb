@@ -10,11 +10,16 @@ class AssetCollectionsController < ApplicationController
     respond_to do |format|
 			format.html
 			format.json { 	
-				render :json => @collection.to_json(:include => { 
-					:assets => { 
-						:only => [ :id, :uri, :width, :height], :methods => [:hocr_blocks]
-					}
-				})
+				render :json => @collection.to_json
+			# 	(:include => [:assets]
+
+				# { 
+					#:assets
+					#=> { 
+					#	:only => [ :id, :width, :height], :methods => [:hocr_blocks, :signed_uri.to_s]
+					#}
+				#})
+			#	)
 			}
 		end    
 	end

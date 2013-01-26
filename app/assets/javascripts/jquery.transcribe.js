@@ -233,6 +233,8 @@ $.widget("ui.transcribe", {
 	_create 								: function() {
 														var self= this;
 
+														this.element.find('.loading').remove();
+
 														// Try to prevent selectable text to mitigate issues while dragging
 														this.element.find('p, div, img')
 															.attr('unselectable', 'on')
@@ -262,7 +264,7 @@ $.widget("ui.transcribe", {
 														var ul = $('<ul class="transcribe-page-nav"></ul>').css('width',this.options.navWidth);
 														for(var i=0;i<this.assets.length;i++) {
 															var _asset = this.assets[i];
-															var img = $('<img/>').attr('src',_asset.uri).css('width',this.options.navWidth);
+															var img = $('<img/>').attr('src',_asset.thumb_uri).css('width',this.options.navWidth);
 															var li = $('<li></li>').css('padding-bottom',this.options.navPadding.bottom)
 																.append(img.click(this.showAsset.bind(this, _asset.id)));
 															ul.append(li);
@@ -291,6 +293,10 @@ $.widget("ui.transcribe", {
 																				 .css("margin", "0px auto")
 																				 .css("left","0px")
 																				 .css("top","0px");
+															if(i == 0)
+																asset.element.load(function() {
+																	console.log('first asset loaded');
+																});
 
 															asset.element.imgAreaSelect({
 																handles: false,

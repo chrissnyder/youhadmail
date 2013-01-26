@@ -1,8 +1,8 @@
 task :playbills_bootstrap => :environment do
   Template.delete_all
   Entity.delete_all
-  Asset.delete_all
-  AssetCollection.delete_all
+  # Asset.delete_all
+  # AssetCollection.delete_all
 
 	Transcription.delete_all
 	Annotation.delete_all
@@ -202,12 +202,16 @@ task :playbills_bootstrap => :environment do
   template.entities << entity
 
 
-
-
   template.save 
 
+=begin
   #generate a single asset and a single user for testing just now
   playbill = AssetCollection.create(:title => "Playbill 1", :author => "", :extern_ref => "http://google.com", :template => template)
+
+  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00030.jpg", :display_width => 1000, :height => 1537, :width => 1000, :asset_collection => playbill, :order => 0)
+  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00031.1.jpg", :display_width => 1000, :height => 1540, :width => 1000, :asset_collection => playbill, :order => 1)
+  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00031.2.jpg", :display_width => 1000, :height => 1540, :width => 1000, :asset_collection => playbill, :order => 2)
+=end
 
 =begin
  	public/images/00024.jpg JPEG 1000x1497 1000x1497+0+0 8-bit PseudoClass 256c 556KB 0.000u 0:00.000
@@ -216,10 +220,6 @@ task :playbills_bootstrap => :environment do
 	public/images/00026.1.jpg[3] JPEG 1000x1537 1000x1537+0+0 8-bit PseudoClass 256c 491KB 0.000u 0:00.000
 	public/images/00026.2.jpg[4] JPEG 1000x1537 1000x1537+0+0 8-bit PseudoClass 256c 553KB 0.000u 0:00.000
 =end
-
-  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00030.jpg", :display_width => 1000, :height => 1537, :width => 1000, :asset_collection => playbill, :order => 0)
-  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00031.1.jpg", :display_width => 1000, :height => 1540, :width => 1000, :asset_collection => playbill, :order => 1)
-  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00031.2.jpg", :display_width => 1000, :height => 1540, :width => 1000, :asset_collection => playbill, :order => 2)
 =begin
   Asset.create(:location => "/images/00024.jpg", :display_width => 800, :height => 1497, :width => 1000, :template => template, :asset_collection => playbill)
   Asset.create(:location => "/images/00025.1.jpg", :display_width => 800, :height => 1534, :width => 1000, :template => template, :asset_collection => playbill)

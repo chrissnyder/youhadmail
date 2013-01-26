@@ -18,6 +18,7 @@ App.prototype = {
 															this.template = template;
 
 															this.playbill_view = new PlaybillView('.completed-playbill', this.template);
+															$('#transcriptions-viewer').show();
 
 															this.editor = this._createEditor(this.collection, this.template);
 
@@ -184,7 +185,7 @@ $(document).ready(function(){
 
 
 <!-- page div is main transcription item -->
-<div id="transcription-area"></div>
+<div id="transcription-area"><span class="loading">Loading</span></div>
 
 
 <div id="footer"></div>
@@ -198,7 +199,8 @@ $(document).ready(function(){
 	<p id="save-instructions">Click "Save" to commit your transcriptions.</p>
   <div id="done-button-holder"><button id ="done-button">Save</button></div>
 
-	<p id="next-document"><a href="/transcriptions/next">Next Playbill</a></p>
+	<p id="next-document"><a href="/transcriptions/next">Next Playbill &raquo;</a></p>
+	<p id="return-to-list"><a href="/">&laquo; Return to List</a></p>
 
 </div>
 

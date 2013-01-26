@@ -3,11 +3,14 @@ include Magick
 
 class HocrDoc
 
-	def self.find_by_uri(uri)
-		return self.new :uri => uri
+	def self.find_by_asset(asset)
+		return self.new :asset => asset
 	end
 
 	def initialize(params)
+		@asset = params[:asset]
+
+=begin
 		@uri = params[:uri]
 		if @uri[0].chr == '/'
 			@uri = 'http://localhost:3001' + @uri
@@ -19,11 +22,14 @@ class HocrDoc
 		@asset_key.gsub! /\//, '-'
 		@asset_key.gsub! /[^a-zA-Z0-9-]/, ''
 
+		@source_width = params.width
+		@source_height = params.height
+
 		local_path = source_image_path
 		image = ImageList.new(local_path).shift
 		@source_width = image.columns
 		@source_height = image.rows
-
+=end
 	end
 
 	def blocks
@@ -39,7 +45,7 @@ class HocrDoc
 			block = {
 				:coords => parse_bbox(area.attribute('title').value[5..-1].split(' ')),
 			}
-			normalize! block[:coords], @source_width, @source_height
+			normalize! block[:coords], @asset.width, @asset.height
 			block[:pars] = []
 
 			area.each_element_with_attribute('class','ocr_par') do |par|
@@ -48,7 +54,7 @@ class HocrDoc
 					l = {
 						:coords => parse_bbox(line.attribute('title').value[5..-1].split(' ')),
 					}
-					normalize! l[:coords], @source_width, @source_height
+					normalize! l[:coords], @asset.width, @asset.height
 					lines << l
 				end
 				block[:pars] << lines
@@ -56,6 +62,7 @@ class HocrDoc
 
 			blocks << block
 		end
+		# Logger.new('log/development.log').debug "blocks returning #{p blocks}"
 
 		if hocr_path.match(/tiff/)
 			ratio = source_ratio
@@ -86,28 +93,16 @@ class HocrDoc
 		coords
 	end
 
-	def source_image_path
-		path = "tmp/#{@asset_key}.jpg"
-
-		unless FileTest.exists?(path)
-			require 'open-uri'
-
-			Logger.new('log/development.log').debug "opening uri: #{@uri}"
-
-			open(@uri) do |rf|
-				Logger.new('log/development.log').debug "writing to #{path}"
-				File.open(path, 'wb') do |wf|
-					wf.puts rf.read
-				end
-			end
-		end
-
-		path
-	end
-
 	def ocr_asset_path type
 		
-		path = "tmp/#{@asset_key}.#{type}"
+		asset_key = @asset.uri.dup
+		asset_key.sub! /\.[a-z]{3,4}$/, ''
+		asset_key.sub! /^(\/|http:\/\/)/, ''
+		asset_key.gsub! /\//, '-'
+		asset_key.gsub! /[^a-zA-Z0-9-]/, ''
+
+
+		path = "tmp/ocr-asset-#{asset_key}.#{type}"
 
 		unless false && FileTest.exists?(path)
 
@@ -115,10 +110,11 @@ class HocrDoc
 				:access_key_id => Transcribe::Application.config.aws_access_key, 
 				:secret_access_key => Transcribe::Application.config.aws_secret_key
 			)
-			box_dir = 'training/box'
-			m = @uri.match /\/(\d+\/\d+(\.\d+)?)\.jpg$/
+			m = @asset.uri.match /\/(\d+\/\d+(\.\d+)?)\.jpg$/
 
-			remote_path = "tesseract/#{m[1]}.#{type}"
+			ext = type == 'hocr' ? 'html' : 'box'
+			remote_path = "tesseract/#{m[1]}.#{ext}"
+			# Logger.new('log/development.log').debug " remote_hocr path: #{remote_path}"
 			remote_file = s3.buckets['programs-cropped.nypl.org'].objects[remote_path]
 
 			local_file = File.open(path,'wb') do |f|
@@ -130,6 +126,7 @@ class HocrDoc
 	end
 
 	def parse_bbox coords
+		# Logger.new('log/development.log').debug "parse_bbox #{p coords}"
 		coords.map! { |c| c.to_i }
 
 		b_width = coords[2] - coords[0]
@@ -141,4 +138,32 @@ class HocrDoc
 		{:ul => ul, :w => b_width, :h => b_height}
 	end
 
+=begin
+	def source_image_path
+		path = "tmp/#{@asset_key}.jpg"
+
+		unless FileTest.exists?(path)
+			require 'open-uri'
+
+			Logger.new('log/development.log').debug "opening uri: #{@uri}"
+
+			s3_path = uri.match(/#{Regexp.escape(cropped_progs_base_uri)}\/(.+)/)[1]
+			s3 = AWS::S3.new(
+				:access_key_id => ENV['AWS_ACCESS_KEY'],
+				:secret_access_key => ENV['AWS_SECRET_KEY']
+			)
+			bucket = s3.buckets['programs-cropped.nypl.org']
+			object = bucket.objects[s3_path]
+
+			open(@uri) do |rf|
+				Logger.new('log/development.log').debug "writing to #{path}"
+				File.open(path, 'wb') do |wf|
+					wf.puts rf.read
+				end
+			end
+		end
+
+		path
+	end
+=end
 end
