@@ -1,0 +1,15 @@
+
+<div class="login-box">
+
+<% if ! @error_message.nil?%>
+	<p>Error: <%= @error_message %></p>
+<% end %>
+
+<% if @user %>
+	<h1>You're logged in as <%= @user.username %></h1>
+
+<% else %>
+	<p><a href="/auth/login">Log In</a></p>
+<% end %>
+
+</div>
