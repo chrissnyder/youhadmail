@@ -9,7 +9,7 @@ class AssetCollection
   
   scope :active, :conditions => { :done => false }
   
-  many :assets 
+  many :assets, :sort => 'uri'
   many :transcriptions
 	belongs_to :template
   
@@ -49,8 +49,13 @@ class AssetCollection
     self.save 
   end
 
-	def to_json(options = {})
+=begin
+	def assets_sorted
 		assets.sort_by! { |asset| asset.order }
+	end
+=end
+
+	def to_json(options = {})
 		{
 			:uri => uri,
 			:template_id => template_id,

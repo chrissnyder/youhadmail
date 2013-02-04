@@ -67,7 +67,6 @@ namespace :ingest do
 				bucket.objects[s3_hocr_path].write(:file => local_hocr_path)
 			end
 
-			puts "  single page count: #{single_page_count}"
 			if remote_file.key.match /\/\d+\.jpg/
 				single_page_count += 1
 			else

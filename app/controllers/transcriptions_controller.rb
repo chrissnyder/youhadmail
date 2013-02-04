@@ -24,6 +24,7 @@ class TranscriptionsController < ApplicationController
 			flash[:notice]= "You have already seen everything"
 			redirect_to :root
 		end
+		render :action => 'transcribe'
   end
 
   def show

@@ -23,4 +23,11 @@ class AssetCollectionsController < ApplicationController
 			}
 		end    
 	end
+
+	def login
+		
+		# Public API key on stage for NYPL  
+
+	end
+
 end

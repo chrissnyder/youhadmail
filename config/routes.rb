@@ -11,6 +11,12 @@ Transcribe::Application.routes.draw do
   resources :transcriptions
   resources :asset_collections
 
+	match 'about' => 'home#about'
+	match 'help' => 'home#help'
+
+	match 'auth/login' => 'auth#login'
+	match 'auth/info' => 'auth#info'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
