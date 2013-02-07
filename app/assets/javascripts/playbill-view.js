@@ -114,7 +114,8 @@ PlaybillView.prototype = {
 
 			case 'Show Date':
 				elem = $('<em><span class="value-holder"></span></em>');
-				elem.setData = (function(data) { this.find('.value-holder').html(this._formatDateRange(data.date_opened, data.date_closed)); }).bind(elem);
+				var viewer = this;
+				elem.setData = (function(data) { this.find('.value-holder').html(viewer._formatDateRange(data.date_opened, data.date_closed)); }).bind(elem);
 				break;
 
 			default:
