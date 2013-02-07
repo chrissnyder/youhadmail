@@ -1,11 +1,15 @@
-body {
-	background: url('bg-tile.png');
-	background-color: #52708B;
+.content-container {
+	width:$layout-width;
+	margin:0 auto;
 }
 
-
-
 /* Nav */
+
+
+#header {
+	background-color:#fff;
+	padding:10px 0;
+}
 
 ul.transcribe-page-nav {
 	position:absolute;
@@ -23,3 +27,6 @@ ul.transcribe-page-nav li {
 ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 	@include box-shadow(3px, 4px, #3C3C3C);
 }
+
+
+

@@ -1,21 +1,12 @@
-#content {
-	width:920px;
-	padding: 30px 0;
-	margin:0 auto;
-	background-color:#fff;
-	overflow:hidden;
-	padding:40px;
-}
 
+#header h1 {
+	font-size:32px;
+}
 
 /* nav */
 
-#content h1 {
-	margin-bottom:4px;
-}
 
 #top-nav {
-	padding-bottom:20px;
 	overflow:hidden;
 }
 
@@ -46,6 +37,20 @@ hr {
 	height:3px;
 }
 
+
+/* copy-heavy pages */
+.copy-content p {
+	font-size: 15px;
+	line-height:1.6em;
+	padding-bottom:1.8em;
+	max-width:500px;
+}
+
+h2 {
+	font-size:22px;
+	color:#333;
+	padding:1em 0;
+}
 
 
 /* playbill list */

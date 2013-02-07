@@ -1,4 +1,34 @@
 
+body#transcriptions_controller {
+	background-color: #52708B;
+	background: url('bg-tile.png');
+}
+
+
+#transcriptions_controller
+{
+
+#header {
+	@include box-shadow(3px, 8px, #000000);
+}
+
+
+#header h1 {
+	width:190px;
+	float:left;
+	font-size:22px;
+}
+
+
+
+#header hr {
+	display:none;
+}
+
+#top-nav {
+	width:400px;
+}
+
 
 /* Transcribe Area */
 
@@ -408,6 +438,7 @@ div.transcribe-form-help a {
 	background-color:#777;
 	max-height:300px;
 	overflow:hidden;
+	border:solid #555 1px;
 }
 
 #transcribe-zoom-box {
@@ -415,7 +446,6 @@ div.transcribe-form-help a {
 	overflow:hidden;
 	width:100%;
 	height:100px;
-	border:solid #555 1px;
 }
 
 .ui-resizable-handle {
@@ -595,7 +625,7 @@ div.transcribe-form-help a {
 /* Inline Tutorial */
 
 .inline-tutorial-holder {
-	background-color: #eee;
+	background-color: #fff;
 	border: 3px solid #303030;
 	@include rounded-corners(5px);
 	@include box-shadow(3px, 6px, #000000);
@@ -706,3 +736,6 @@ div.transcribe-form-help a {
 	border-bottom: 20px solid transparent;
 	border-top: 20px solid transparent;
 }
+
+
+} /* end transcriptions_controller scope */

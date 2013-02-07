@@ -1,7 +1,17 @@
-<h1>Playbills</h1>
-<hr />
-<div id="top-nav">
-	<a href="/" class="primary<%= @active == 'transcribe' ? ' active' : '' %>">Transcribe</a>
-	<a href="/help" class="secondary">Help</a>
-	<a href="/about" class="secondary">About</a>
+
+<div id="header">
+	<div class="content-container">
+		<h1>Playbills NYPL</h1>
+		<hr />
+		<div id="top-nav">
+			<% if params[:controller] == 'transcriptions' %>
+				<a href="/" class="primary<%= @active == 'transcribe' ? ' active' : '' %>">Home</a>
+			<% else %>
+				<a href="/" class="primary<%= @active == 'transcribe' ? ' active' : '' %>">Transcribe</a>
+			<% end %>
+			<a href="/help" class="secondary">Help</a>
+			<a href="/about" class="secondary">About</a>
+		</div>
+	</div>
 </div>
+

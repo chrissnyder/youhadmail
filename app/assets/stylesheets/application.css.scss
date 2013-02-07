@@ -10,6 +10,9 @@
  *
  *= require_self
  */
+
+$layout-width:1000px;
+
 $warn-color: #BB5555;
 $success-color: green;
 
@@ -29,4 +32,6 @@ $success-color: green;
 @import "fonts.css";
 @import "reset.css";
 @import "layout.css.scss";
+
 @import "transcribe-tool.css.scss";
+@import "home.css.scss";

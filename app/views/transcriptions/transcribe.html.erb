@@ -192,11 +192,12 @@ $(document).ready(function(){
 <% end %>
 
 
+<%= render :partial => '/nav' %>
+
 <!-- page div is main transcription item -->
 <div id="transcription-area"><span class="loading">Loading <img src="/assets/spinner.gif" /></span></div>
 
 
-<div id="footer"></div>
 
 <div id="transcriptions-viewer">
 	<h3>Transcriptions</h3>
@@ -205,10 +206,12 @@ $(document).ready(function(){
 	<div class="completed-playbill"></div>
 
 	<p id="save-instructions">Click "Save" to commit your transcriptions.</p>
-  <div id="done-button-holder"><button id ="done-button">Save</button></div>
+	<div id="done-button-holder"><button id ="done-button">Save</button></div>
 
 	<p id="next-document"><a href="/transcriptions/next">Next Playbill &raquo;</a></p>
 	<p id="return-to-list"><a href="/">&laquo; Return to List</a></p>
 
 </div>
+
+<div id="footer"></div>
 
