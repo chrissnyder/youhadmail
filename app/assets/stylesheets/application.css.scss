@@ -9,5 +9,24 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require_tree .
  */
+$warn-color: #BB5555;
+$success-color: green;
+
+@mixin rounded-corners($radius) {
+	border-radius: $radius;
+	-moz-border-radius: $radius;
+	-webkit-border-radius: $radius;
+}
+
+@mixin box-shadow($dist, $blur, $color) {
+	-moz-box-shadow: $dist, $dist, $blur, $color;
+	-webkit-box-shadow: $dist, $dist, $blur, $color;
+	box-shadow: $dist, $dist, $blur, $color;
+}
+
+
+@import "fonts.css";
+@import "reset.css";
+@import "layout.css.scss";
+@import "transcribe-tool.css.scss";

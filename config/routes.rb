@@ -9,7 +9,10 @@ Transcribe::Application.routes.draw do
   match 'transcriptions/by_user/:collection_id' => 'transcriptions#by_user'
   match 'transcriptions/terms/:entity_id/:field_key' => 'transcriptions#terms'
   resources :transcriptions
-  resources :asset_collections
+  resources :asset_collections do
+		resources :annotations
+	end
+  resources :annotations
 
 	match 'about' => 'home#about'
 	match 'help' => 'home#help'

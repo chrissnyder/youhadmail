@@ -1,7 +1,7 @@
 class TranscriptionsController < ApplicationController
   # before_filter CASClient::Frameworks::Rails::Filter, :only => [:new, :index, :edit]
-  before_filter :check_or_create_user, :only => [:transcribe, :index, :edit]
-  before_filter :get_or_assign_collection, :only => [:next, :transcribe]
+  before_filter :check_or_create_user, :only => [:transcribe, :index, :edit, :create]
+  # before_filter :get_or_assign_collection, :only => [:next, :transcribe]
   after_filter :clear_session, :only =>[ :create ]
   
   def transcribe
@@ -20,9 +20,11 @@ class TranscriptionsController < ApplicationController
   def next
     @user = current_user
 
+		@collection = AssetCollection.next_unseen_for_user(@user)
 		if @collection.nil? 
 			flash[:notice]= "You have already seen everything"
 			redirect_to :root
+			return
 		end
 		render :action => 'transcribe'
   end
@@ -43,21 +45,36 @@ class TranscriptionsController < ApplicationController
   end
   
   def create 
-		transcription = Transcription.find_by_user_id_and_asset_collection_id(current_user.id, params[:collection_id])
+		# transcription = Transcription.find_by_user_id_and_asset_collection_id(current_user.id, params[:collection_id])
 
-		return update unless transcription.nil?
+		# return update unless transcription.nil?
 
 		collection = AssetCollection::find(params[:collection_id])
-		transcription = Transcription.create( :user => current_user, :asset_collection => collection)
+		# transcription = Transcription.create( :user => current_user, :asset_collection => collection)
                                             
     annotations = params[:annotations]
-    transcription.add_annotations_from_json(annotations)
+
+		@user = current_user
+		Annotation.where(:user_id=> @user.id, :asset_collection_id=>collection.id).remove
+
+=begin
+		@user.annotations.delete_if {|ann| 
+			do_it = ann.asset_collection_id == collection.id
+			logger.debug "deleting ann? #{do_it}"
+			do_it
+		}
+		@user.save
+		logger.debug "current user: #{p current_user.annotations.size}"
+=end
+
+    # transcription.add_annotations_from_json(annotations)
+    @user.add_annotations_from_json(annotations, collection.id)
 
     respond_to do |format|
       format.js { render :nothing => true, :status => :created }
     end
   end
-  
+   
   
   def update
 
@@ -127,7 +144,7 @@ class TranscriptionsController < ApplicationController
   end
   
   def clear_session
-    [:collection_id].each {|a| session[a]=nil}
+    # [:collection_id].each {|a| session[a]=nil}
   end
 end
 

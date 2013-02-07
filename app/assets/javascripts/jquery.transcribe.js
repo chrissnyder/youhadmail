@@ -2,7 +2,7 @@ $.widget("ui.transcribe", {
 
 	options									: {	
 		annotationBoxWidth  							: 500,
-		annotationBoxHeight 							: 250,
+		annotationBoxHeight 							: 400,
 		zoomLevel					 								: 1,
 
 		zoomBoxWidth											: 500,
@@ -17,6 +17,8 @@ $.widget("ui.transcribe", {
 		onAnnotationRemoved 							: null,
 		onAnnotationUpdated								: null,
 		onAnnotationEditedStarted 				: null,
+
+		advanceToNextLineAfterAdd         : true,
 
 		authenticity_token 								: null,
 
@@ -34,26 +36,61 @@ $.widget("ui.transcribe", {
 
 	/* Begin: Public Methods */
 
-	deleteAnnotation				: function (annotation_id){
-														if(this.annotations[annotation_id].marker_element)
-															this.annotations[annotation_id].marker_element.remove();
-														this.annotations[annotation_id] = null;
-														this._trigger('anotationDeleted',{},"message deleting"+annotation_id)
-														if(this.options.onAnnotationRemoved!=null) {
-															this.options.onAnnotationRemoved.call(this, annotation_id);
+	deleteAnnotation				: function (marker, confirmDeletion) {
+														console.log('editing: ', marker, this.editing_id, this);
+														if($.type(marker) == 'undefined' || $.type(marker.annotations) == 'undefined') 
+															marker = this.annotations[this.editing_id].marker_element;
+														if(typeof confirmDeletion == 'undefined') confirmDeletion = true;
+
+														for(var i=0;i<marker.annotations.length;i++) {
+															var annotation = marker.annotations[i];
+															if(!annotation.readonly)
+																break;
 														}
+
+														if(confirmDeletion && !confirm('Are you sure you want to delete this transcription?')) return;
+
+														if(this.annotations[annotation.id].marker_element)
+															this.annotations[annotation.id].marker_element.remove();
+														this.annotations[annotation.id] = null;
+														this._trigger('anotationDeleted',{},"message deleting" + annotation.id)
+														if(this.options.onAnnotationRemoved!=null) {
+															this.options.onAnnotationRemoved.call(this, annotation.id);
+														}
+
+														this._dismissAnnotationBox();
 														  
 	},
 
-	editAnnotation					: function (annotation_id) {
-														var annotation = this.annotations[annotation_id];
-														this.showAsset(annotation.asset_id);
-														this.editing_id = annotation_id;
+	_editAnnotationByMarker	: function (marker) {
+														console.log('editing marker: ', marker);
+														var annotation = false;
+														for(var i=0;i<marker.annotations.length;i++) {
+															var annotation = marker.annotations[i];
+															if(!annotation.readonly) {
+																console.log("editing annotation " + i + ' (id ' + annotation.id + ') among ' + marker.annotations.length + ' annotations');
+																break;
+															}
+														}
 
-														this._trigger('anotationEdited',{},"message editing"+annotation_id)
+														if(annotation)
+															this.editAnnotation(annotation.id);
+														else
+															console.log("couldn't find editable annotation by marker ", marker.annotations);
+	},
+
+	editAnnotation					: function(id) {
+														var annotation = this.annotations[id];
+														// var annotation = this.annotations[annotation_id];
+														this.showAsset(annotation.asset_id);
+														// this.editing_id = annotation_id;
+														this.editing_id = annotation.id;
+
+														// TODO: fix this stuff
+														// this._trigger('anotationEdited',{},"message editing"+annotation_id)
 														if(this.options.onAnnotationEditedStarted!=null){
 															// console.log('onAnnotationEditedStarted: ' + annotation_id);
-															this.options.onAnnotationEditedStarted.call(this,{annotation_id:annotation_id, data:annotation});
+															// this.options.onAnnotationEditedStarted.call(this,{annotation_id:annotation_id, data:annotation});
 													 	}
 														this._showBoxWithAnnotation(annotation);
 	},
@@ -67,7 +104,7 @@ $.widget("ui.transcribe", {
 														// Ensure removed annotations aren't included
 														for(var id in this.annotations) {
 															var ann = this.annotations[id];
-															if (ann != null) {
+															if (ann != null && !ann.readonly) {
 																var cleaned = {
 																	asset_id: ann.asset_id,
 																	bounds: ann.bounds,
@@ -108,10 +145,10 @@ $.widget("ui.transcribe", {
 	_modalUpdateZoomControls: function() {
 
 														if(!this._getNextLine(1)) {
-															$('.button-add-next-line').addClass('disabled');
+															// $('.button-add-next-line').addClass('disabled');
 															$('.button-next-line').addClass('disabled');
 														} else {
-															$('.button-add-next-line').removeClass('disabled');
+															// $('.button-add-next-line').removeClass('disabled');
 															$('.button-next-line').removeClass('disabled');
 														}
 														if(!this._getNextLine(-1)) {
@@ -141,7 +178,6 @@ $.widget("ui.transcribe", {
 																}
 															}
 														}
-														console.log("in view: %o",lines);
 														var selectedLine;
 														if(steps > 0)
 															selectedLine = lines.pop();
@@ -176,9 +212,10 @@ $.widget("ui.transcribe", {
 															$('.transcribe-image-holder > img').hide();
 															$('.transcribe-image-holder .hocr-line').hide();
 
-															for(var id in this.annotations) {
-																if (this.annotations[id] != null) {
-																	var ann = this.annotations[id];
+															// Show/hide annotation markers based on which asset shown
+															for(var _id in this.annotations) {
+																if (this.annotations[_id] != null) {
+																	var ann = this.annotations[_id];
 																	if(ann.marker_element) {
 																		if(ann.asset_id != id) {
 																			ann.marker_element.hide();
@@ -187,7 +224,6 @@ $.widget("ui.transcribe", {
 																	}
 																}
 															}
-
 
 															// Update zoom box
 															var imageWidth = this.assets[this.assetIndex].displayWidth * this.options.zoomLevel;
@@ -206,7 +242,7 @@ $.widget("ui.transcribe", {
 															var hocrLines = this.assets[this.assetIndex].lines;
 															for(var i=0;i<hocrLines.length;i++) {
 																hocrLines[i].element.show();
-																hocrLines[i].zoomElement.show();
+																// hocrLines[i].zoomElement.show();
 															}
 
 															this.element.find('.transcribe-page-nav').css('height', this.assets[this.assetIndex].displayHeight);
@@ -273,18 +309,26 @@ $.widget("ui.transcribe", {
 	},
 
 	setAnnotations					: function(annotations) {
+														console.log('annotations: ', annotations);
 														this.annotations = [];
 														for(var i=0;i<annotations.length;i++) {
 															var ann = annotations[i];
-															ann.id = i;
+															// ann.id = i;
 															this.annotations[ann.id] = ann;
 														}
 														this.annIdCounter = i;
 
 														for(var id in this.annotations){
 															var bounds = this.annotations[id].bounds;
-															
-															this.annotations[id].marker_element = this._generateMarker(this._denormalizeBounds(bounds), id);
+														
+															this.annotations[id].marker_element = this._generateMarker(this.annotations[id], this._denormalizeBounds(bounds));
+															this.annotations[id].readonly = this.annotations[id].user.id != this.options.userId;
+
+															// if(this.annotations[id].user.id
+															console.log('new/old marker for: ', this.annotations[id]);
+															if(this.assets[this.assetIndex].id != this.annotations[id].asset_id)
+																this.annotations[id].marker_element.hide();
+
 															if (this.options.onAnnotationAdded!=null){
 																this.options.onAnnotationAdded.call(this, this.annotations[id]);
 															}
@@ -337,6 +381,7 @@ $.widget("ui.transcribe", {
 															}
 														}
 
+
 														// Build central image view
 														this.element.append($('<div class="transcribe-image-holder"></div>'));
 														for(var i=0;i<this.assets.length;i++) {
@@ -354,20 +399,15 @@ $.widget("ui.transcribe", {
 																				 .css("top","0px");
 															if(i == 0)
 																asset.element.load(function() {
-																	console.log('first asset loaded');
+																	// console.log('first asset loaded');
 																});
 
 															asset.element.imgAreaSelect({
-																handles: false,
-																autoHide : true,
-																onSelectEnd: function render_options(img, box){
-																	var midX=(box.x1+box.x2)/2.0;
-																	var midY=(box.y1+box.y2)/2.0;
-																	
-																	if(box.width == 0 || box.height == 0) return;
-
-																	self._showBox({x:midX, y:midY, width:box.width, height:box.height});
-																}
+																handles: true,
+																// autoHide : true,
+																// onSelectEnd: this._handleSelectEnd.bind(this),
+																zIndex: 10,
+																onSelectChange: this._handleSelectEnd.bind(this)
 															});
 
 															this.imageElements.push(asset.element);
@@ -377,9 +417,12 @@ $.widget("ui.transcribe", {
 															this._createHocrElements(asset);
 														}
 
+														this.element.find('.transcribe-image-holder').append($('<div class="area-select-box-controls"></div>')
+															.append($('<a href="javascript:void(0);">Transcribe →</a>').click(this._transcribeSelectedArea.bind(this)))
+														);
+
 														this.element.append(this.images);
-
-
+															
 														// Create hocr-line selector bounding box
 														this.lineBoundingBox = $('<div class="transcribe-line-bounding-box"><div class="transcribe-color-overlay"></div></div>')
 															.appendTo(this.element.find('.transcribe-image-holder'));
@@ -403,6 +446,7 @@ $.widget("ui.transcribe", {
 														// Create transcription modal
 														this.transcribeModal = this._generateTranscribeModal();
 														this.element.find('.transcribe-image-holder').append(this.transcribeModal);
+														// $(document.body).append(this.transcribeModal);
 
 														// Create help dialog
 														this.dialog = $('<div></div>').dialog({
@@ -414,10 +458,11 @@ $.widget("ui.transcribe", {
 
 
 														this.element.click(function(event){
-															event.preventDefault();
+															// event.preventDefault();
 														});
 
 														this.editing_id = null;
+														this.markers = [];
 
 
 														// Show first image
@@ -462,6 +507,7 @@ $.widget("ui.transcribe", {
 
 	_currentInputs					: function() {
 														var fieldset = $('div#transcribe_fieldset_' + this.currentEntityId);
+														console.log('_currentInputs fieldset: ', fieldset, this.currentEntityId);
 														var inputs = fieldset.find('input, select');
 														return inputs;
 	},
@@ -469,7 +515,6 @@ $.widget("ui.transcribe", {
 	_denormalizeBounds 			: function(bounds, toWhat) {
 														var toWhat = (typeof toWhat=='undefined')?'asset':'zoomed-asset';
 														var scaleFactor = (toWhat=='zoomed-asset'?this.options.zoomLevel:1)
-														console.log('scale factor: ' + scaleFactor);
 
 														var assetWidth = this.assets[this.assetIndex].displayWidth * scaleFactor;
 														var assetHeight = this.assets[this.assetIndex].displayHeight * scaleFactor;
@@ -489,7 +534,10 @@ $.widget("ui.transcribe", {
 	},
 
 	_dismissAnnotationBox  	: function(){
-														this.imageElements[this.assetIndex].imgAreaSelect({disable:false});
+														// this.imageElements[this.assetIndex].imgAreaSelect({disable:false});
+														this._imageAreaSelector().setOptions({hide: true});
+														this.element.find('.area-select-box-controls').hide();
+
 														if (this.editing_id!=null){
 															var annotation_data=this.annotations[this.editing_id];
 															if (this.options.onAnnotationUpdated!=null){
@@ -501,7 +549,9 @@ $.widget("ui.transcribe", {
 
 														this.transcribeModal.find('div.transcribe-entity-fieldsets input[type=text]').val('');
 
-														this._deselectSelectedLines();
+														// this._deselectSelectedLines();
+
+
 	},
 
 
@@ -515,39 +565,39 @@ $.widget("ui.transcribe", {
 
 	},
 
+	_imageAreaSelector			: function() {
+														var img = this.imageElements[this.assetIndex];
+														return img.data('imgAreaSelect');
+	},
+
 	_hocrLineClicked				: function(l, forceSelected) {
-														if(typeof forceSelected == 'boolean' && forceSelected)
-															l.selected = true;
-														else 
-															l.selected = typeof l.selected == 'undefined' ? true : !l.selected;
+														var coords = this._linesCoords([l]);
 
-														if(l.selected) {
-															l.element.addClass('selected');
-															this.selectedLines.push(l);
+														var selectionCoords = {
+															x1: coords.x * this.assets[this.assetIndex].displayWidth,
+															y1: coords.y * this.assets[this.assetIndex].displayHeight,
+															x2: (coords.x + coords.width) * this.assets[this.assetIndex].displayWidth,
+															y2: (coords.y + coords.height) * this.assets[this.assetIndex].displayHeight
+														};
+														var selector = this._imageAreaSelector();
+														selector.setOptions({show: true});
+														selector.setSelection(
+															selectionCoords.x1,
+															selectionCoords.y1,
+															selectionCoords.x2,
+															selectionCoords.y2,
+															1
+														);
+														selector.update();
 
-														} else {
-															l.element.removeClass('selected');
-															this.selectedLines = $.grep(this.selectedLines, function(_l) { return _l.id != l.id; });
-														}
+														// position ctrls
+														this._handleSelectEnd(null, {
+															x1: selectionCoords.x1, 
+															y1: selectionCoords.y1, 
+															width: selectionCoords.x2 - selectionCoords.x1, 
+															height: selectionCoords.y2 - selectionCoords.y1
+														});
 
-														// All deselected? hide
-														if(this.selectedLines.length == 0) {
-															this.lineBoundingBox.hide();
-
-														// ..Otherwise, create bounding box around all lines:
-														} else {
-															var coords = this._linesCoords(this.selectedLines); 
-
-															this.lineBoundingBox.css({
-																left: coords.x * this.assets[this.assetIndex].displayWidth,
-																top: coords.y * this.assets[this.assetIndex].displayHeight,
-																width: coords.width * this.assets[this.assetIndex].displayWidth,
-																height: coords.height * this.assets[this.assetIndex].displayHeight
-															}).show();
-
-															this.lineBoundingBox.find('.transcribe-line-bounding-box-message')
-																.text(this.selectedLines.length + ' line' + (this.selectedLines.length!=1?'s':'') + ' selected');
-														}
 	},
 
 	_linesCoords		: function(lines) {
@@ -576,7 +626,6 @@ $.widget("ui.transcribe", {
 	},
 	
 	_hocrLineDoubleClicked	: function(l) {
-														console.log('clicked %o', l.id.substring(l.id.length-2));
 														this._hocrLineClicked(l, true);
 														this._transcribeSelectedLines();
 	},
@@ -592,6 +641,29 @@ $.widget("ui.transcribe", {
 															}
 														}
 														return ret;
+	},
+
+	_handleSelectEnd				: function(img, box) {
+														console.log("select end: ", arguments);
+														var controls = this.element.find('.area-select-box-controls');
+
+														if(box.width == 0 || box.height == 0) {
+															controls.hide();
+
+														} else {
+															controls
+																.css({
+																	top: box.y1 - controls.outerHeight(),
+																	left: box.x1
+																})
+																.show();
+														}
+
+														// Apply dbl click handler to imgareaselect divs (doing this here because only now are divs guaranteed loaded)
+														$('.imgareaselect-selection, div[class^=imgareaselect-border]').dblclick((function() {
+															this._transcribeSelectedArea()
+														}).bind(this));
+
 	},
 
 	_inView									: function(coords) {
@@ -618,13 +690,14 @@ $.widget("ui.transcribe", {
 	},
 
 
-	_modalSelectEntityCategory	: function(catId) {
+	_modalSelectEntityCategory	: function(catName) {
+															var catId = 'category-' + catName.replace(/ /,'_').toLowerCase();
+															console.log("name: " + catId);
 
 															// ensure submenus are exactly same height as cat menu
 															$('.entity-submenus ul').css('height', $('.entity-categories').innerHeight());
 
 															if($('.entity-categories li.selected').attr('id') == catId) return;
-															console.log('switching to obj: %o', $('.entity-categories li.selected'));
 															$('.entity-submenu li').removeClass('selected');
 
 															this.element.find('.entity-categories li').removeClass('selected');
@@ -632,19 +705,23 @@ $.widget("ui.transcribe", {
 
 															this.element.find('.entity-submenu').removeClass('selected');
 															this.element.find('#entity-submenu-' + catId).addClass('selected');
+															console.log('li: ' + '#entity-submenu-' + catId + ': ', this.element.find('#entity-submenu-' + catId));
 
 															this.element.find('#entity-submenu-' + catId + ' li:first-child').trigger('click');
 	},
 
 	_modalSelectEntity 				: function(entityId) {
+															console.log('_modalSelectEntity ', entityId);
 
-															this.transcribeModal.find('div.transcribe-entity-fieldsets .save-button').show();
+															var entity = this._entityById(entityId);
+															this._modalSelectEntityCategory(entity.category);
+
+															this.transcribeModal.find('div.transcribe-entity-fieldsets .save-button-bar').show();
 
 															$('.entity-submenu li').removeClass('selected');
 															$('#entity-' + entityId).addClass('selected');
 		
 															this.currentEntityId = entityId;
-															var entity = this._entityById(this.currentEntityId);
 
 															// Hide entity type selector
 															this.transcribeModal.find('ul.entity-types').hide();
@@ -681,12 +758,27 @@ $.widget("ui.transcribe", {
 														return normalized_bounds
 	},
 
-	_showBox               	: function(position) {
+	_positionCode						: function(position) {
+														var precision = 3;
+														var vals = [];
+														vals.push(this._round(position.width, precision));
+														vals.push(this._round(position.height, precision));
+														vals.push(this._round(position.x, precision));
+														vals.push(this._round(position.y, precision));
+														return vals.join('|');
+	},
 
+	_round									: function(val, precision) {
+														var factor = Math.pow(10,precision);
+														var val = val * factor;
+														val = Math.round(val);
+														return val * 1.0 / factor;
+	},
+	
+	_showBox               	: function(position) {
 
 														// Reset:
 														this.transcribeModal.find('ul.entity-types').show();
-														this.currentEntityId = null;
 															
 														$('.transcribe-modal-containment').show();
 														// $('.transcribe-modal').draggable( "option", "containment", "#" );
@@ -695,48 +787,39 @@ $.widget("ui.transcribe", {
 														$('.darkening-overlay').show()
 															.css('height',doc_height)
 
-														this.assets[this.assetIndex].element.imgAreaSelect({disable:true});
-
-
+														this._imageAreaSelector().setOptions({disabled: true});
+														// this.assets[this.assetIndex].element.imgAreaSelect({disable:true});
 
 														if(position){
 															if(position.width && position.height){
 																var zoomLevel = this.options.zoomLevel;
 
 																this.options.zoomBoxWidth = position.width * zoomLevel;
-																this.options.zoomBoxHeight = position.height * zoomLevel;
+																// this.options.zoomBoxHeight = position.height * zoomLevel;
+																this.options.zoomBoxHeight = Math.min(position.height * zoomLevel, parseInt(this.element.find('#transcribe-zoom-box-holder').css('max-height')));
 																
 																this.transcribeModal.zoomBox
 																	.setSize( position.width * zoomLevel, position.height * zoomLevel);
 
 																this.transcribeModal.zoomBox
-																	.css("top", this.options.annotationBoxHeight+1)
 																	.css("left",this.options.annotationBoxWidth/2.0-this.options.zoomBoxWidth/2.0);
 																
 															}
 															var xOffset = $(this.transcribeModal).width()/2.0;
 															var yOffset = $(this.transcribeModal).height()+($(this.transcribeModal.zoomBox).height())/2.0;
 															// var screenX = position.x-xOffset;
-															this.transcribeModal.css("top",position.y-yOffset);
-															console.log('setting zoom box pos: %o, %o', position.x, position.y);
+															// this.transcribeModal.css("top",position.y-yOffset);
+															this.transcribeModal.center();
 															// this.transcribeModal.css("position","absolute");
 															var zoomX = -1*(position.x*this.options.zoomLevel-this.options.zoomBoxWidth/2.0);
 															var zoomY = -1*(position.y*this.options.zoomLevel-this.options.zoomBoxHeight/2.0);
 															
-															if(position.y > this.options.assetScreenHeight/2){
-																this.options.orientation="floatAbove";
-																$(".transcribe-form-holder").css("top",0);
-															}
-															else{
-																this.options.orientation="floatUnder";
-																$(".transcribe-form-holder").css({
-																	top: this.options.annotationBoxHeight - 60,
-																	height: this.options.annotationBoxHeight + this.options.zoomBoxHeight + 60
-																});
-																$(".transcribe-form-top-bar").css("padding-top", this.options.zoomBoxHeight + 80);
-															}
-															
-															
+															this.options.orientation="floatUnder";
+															$(".transcribe-form-holder").css({
+																height: this.options.annotationBoxHeight + this.options.zoomBoxHeight
+															});
+															$(".transcribe-form-top-bar").css("padding-top", this.options.zoomBoxHeight + 80);
+
 															$(this.transcribeModal.zoomBox).find("#transcribe-zoom-box-image-holder").css({
 																top: zoomY,
 																left: zoomX
@@ -749,6 +832,7 @@ $.widget("ui.transcribe", {
 	}, 
 
 	_showBoxWithAnnotation  : function(annotation) {
+														console.log('annotation: ', annotation);
 														zoom = this.options.zoomLevel;
 														
 														var bounds = this._denormalizeBounds(annotation.bounds);
@@ -757,14 +841,18 @@ $.widget("ui.transcribe", {
 																		 y: bounds.y+bounds.height/2,
 																 		 width: bounds.width ,
 																		height: bounds.height}
-														console.log('showing box at %o, (%o)', bounds, annotation.bounds);
 																			
+														this.transcribeModal.find('.delete-link').show();
+														
 														this._showBox(bounds);
+														console.log("calling _modalSelectEntityshow ", annotation.entity_id);
 														this._modalSelectEntity(annotation.entity_id);
 
 														var inputs = this._currentInputs();
+														console.log("show inputs: ", inputs, annotation.data);
 														inputs.each(function(index, el) {
 															var field_key = $(el).data('field-key');
+															console.log("field key: ", '' + field_key, annotation.data[field_key]);
 															$(el).val(annotation.data[field_key]);
 														});
 
@@ -795,12 +883,33 @@ $.widget("ui.transcribe", {
 														// var bboxElem = this.lineBoundingBox;
 														var coords = this._linesCoords(this.selectedLines);
 														var position = this._denormalizeBounds(coords);
-														console.log('selected lines pos: ', coords, position.x, position.y, position.width, position.height);
+														// console.log('selected lines pos: ', coords, position.x, position.y, position.width, position.height);
 														position.x += position.width/2;
 														position.y += position.height/2;
 														
 														this._showBox(position);
 	},
+
+	_transcribeSelectedArea	: function() {
+														var sel = this._imageAreaSelector().getSelection();
+														// var sel = this.imageElements[this.assetIndex].data('imgAreaSelect').getSelection();
+														var position = {
+															width: sel.width,
+															height: sel.height,
+															x: sel.x1,
+															y: sel.y1
+														}
+														console.log('selection: ', sel);
+														// var bboxElem = this.lineBoundingBox;
+														// var position = this._denormalizeBounds(coords);
+														// console.log('selected lines pos: ', coords, position.x, position.y, position.width, position.height);
+														position.x += position.width/2;
+														position.y += position.height/2;
+														
+														this._showBox(position);
+	},
+
+
 
 	/* End: UI Utils */
 
@@ -871,7 +980,6 @@ $.widget("ui.transcribe", {
 																	if(source)
 																		result.autocomplete({source: source});
 																}
-
 																
 																if (field.options.text){
 																	if(field.options.text.max_length){
@@ -942,7 +1050,20 @@ $.widget("ui.transcribe", {
 													return inputBar;
 	},
 
-	_generateMarker 				: function (position, marker_id){
+	// _generateMarker 				: function (position, marker_id){
+	_generateMarker 				: function (annotation, position) {
+														// var position = this._denormalizeBounds(annotation.bounds);
+														var incomingPositionCode = this._positionCode(annotation.bounds);
+														for(var id in this.annotations) {
+															var ann = this.annotations[id];
+															var positionCode = this._positionCode(ann.bounds);
+															if(positionCode == incomingPositionCode && ann.marker_element) {
+																console.log('found exisitng position code: ' + positionCode, 'vs', incomingPositionCode);
+																ann.marker_element.annotations.push(annotation);;
+																return ann.marker_element;
+															}
+														}
+														console.log('creating new marker: ', annotation);
 														var marker = $('<div><div class="transcribe-color-overlay"></div></div>')
 																						.addClass('transcribe-marker')
 																						.css({
@@ -950,17 +1071,20 @@ $.widget("ui.transcribe", {
 																							height: position.height,
 																							top: position.y,
 																							left: position.x
-																						})
-																						.dblclick(this.editAnnotation.bind(this, marker_id));
+																						});
+														marker.dblclick(this._editAnnotationByMarker.bind(this, marker));
 														var controls = $("<div class='transcribe-marker-controls'></div>");
 														
-														controls.append($('<a href="javascript:void(0);">Edit</a>').click(this.editAnnotation.bind(this, marker_id)));
-														controls.append($('<a href="javascript:void(0);">Delete</a>').click(this.deleteAnnotation.bind(this, marker_id)));
+														controls.append($('<a href="javascript:void(0);">Edit</a>').click(this._editAnnotationByMarker.bind(this, marker)));
+														controls.append($('<a href="javascript:void(0);">Delete</a>').click(this.deleteAnnotation.bind(this, marker)));
 														marker.append(controls);
 														this.element.find('.transcribe-image-holder').append(marker);
+
+														marker.annotations = [annotation];
+														this.markers.push(marker);
 														return marker;
 	},
-		
+	
 	_generateTranscribeModal : function() {
 														var self = this;
 														var image = this.imageElements[this.assetIndex];
@@ -980,11 +1104,9 @@ $.widget("ui.transcribe", {
 
 														var containment = modalContainment;
 
-
 														var modal = $("<div class='transcribe-modal'></div>").draggable(this, { containment: containment, cursor:false, drag: function(event,ui){
-															self._updateWithDrag(ui.position);
+															// self._updateWithDrag(ui.position);
 														}});
-														
 
 														var overlay = $('<div class="darkening-overlay"></div>')
 															.click(this._dismissAnnotationBox.bind(this));
@@ -1013,7 +1135,7 @@ $.widget("ui.transcribe", {
 																categoryChoices.append(
 																	$('<li id="' + catId + '">' + catName + '</li>')
 																		.css('background-image','url(/assets/' + catId + '.png)')
-																		.click(this._modalSelectEntityCategory.bind(this, catId))
+																		.click(this._modalSelectEntityCategory.bind(this, catName))
 																);
 																entitySubmenus.append($('<ul class="entity-submenu" id="entity-submenu-' + catId + '"></>'));
 															}
@@ -1027,9 +1149,25 @@ $.widget("ui.transcribe", {
 														form.append(categoryChoices);
 														form.append(entitySubmenus);
 
+														var saveBar = $('<div class="save-button-bar"></div>').css('display','none');
+														saveBar.append($("<input type='submit' value='save'>").addClass("save-button").click(function(e){ self._addAnnotation(e) } ));
+														saveBar.append(
+															$('<span class="transcribe-form-next-after-add" id="transcribe-form-next-after-add"></span>')
+																.append(
+																	$('<input type="checkbox" />')
+																		.attr('checked', this.options.advanceToNextLineAfterAdd ? 'checked' : null)
+																		.change((function(e) {
+																				this.options.advanceToNextLineAfterAdd = e.target.checked
+																				console.log("set adv after add to " + this.options.advanceToNextLineAfterAdd);
+																			}).bind(this))
+																)
+																.append($('<label for="transcribe-form-next-after-add">Go to next line after add</label>'))
+														);
+														saveBar.append($('<div class="modal-status-message"></div>'));
+														saveBar.append($('<div class="delete-link" />').append($('<a href="javascript:void(0);">Delete this transcription</a>').click(this.deleteAnnotation.bind(this))));
 														var inputBar      = this._generateInputs(this.options.template.entities);
-														inputBar.append($("<input type='submit' value='add'>").css('display','none').addClass("save-button").click(function(e){ self._addAnnotation(e) } ));
-														inputBar.append($('<span class="modal-status-message"></span>'));
+														inputBar.append(saveBar);
+
 														form.append(inputBar);
 														
 														modal.transcriptionArea = $('<div class="transcribe-form-holder"></div>');
@@ -1042,7 +1180,10 @@ $.widget("ui.transcribe", {
 														modal.transcriptionArea.css("width",this.options.annotationBoxWidth+"px")
 																				 .css("height",this.options.annotationBoxHeight+"px");
 														modal.css("width",this.options.annotationBoxWidth+"px")
-																										 .css("height",this.options.annotationBoxHeight+"px");
+																 .css("height",this.options.annotationBoxHeight+"px");
+
+														// jq draggable wants to set position:relative; override it:
+														modal.css("position",'fixed');
 
 														modal.zoomBoxMoved = (function(ui) {
 															({
@@ -1052,7 +1193,17 @@ $.widget("ui.transcribe", {
 														
 														modal.zoomBox = this._generateZoomBox();
 														modal.append(modal.zoomBox);
+
+														var boxControls = $('<div class="zoom-box-controls"></div>');
+
+														boxControls.append($('<div class="zoom-box-control button-next-line"><span class="ui-icon ui-icon-arrowthickstop-1-s"></span>Next Line</div>').click(this._modalMoveToLine.bind(this, 1)));
+														boxControls.append($('<div class="zoom-box-control button-previous-line"><span class="ui-icon ui-icon-arrowthickstop-1-n"></span>Previous Line</div>').click(this._modalMoveToLine.bind(this, -1)));
+														// zoomBoxHolder.append($('<div class="zoom-box-control button-add-next-line"><span class="ui-icon ui-icon-plusthick"></span>Add Next Line</div>').css({position:'absolute',width:100,right:0,bottom:-25}).click(this._modalAddLine.bind(this, 1)));
+														modal.append(boxControls);
+
+
 														modal.css("z-index","100");
+
 														return modal;
 														
 	},
@@ -1064,15 +1215,8 @@ $.widget("ui.transcribe", {
 																												.css('left',0);
 
 														var zoomBoxHolder = $('<div id="transcribe-zoom-box-holder"><div id="transcribe-zoom-box"></div></div>')
-															.css("top", this.options.annotationBoxHeight)
+															.css("top", 40)
 															.css("left",this.options.annotationBoxWidth/2.0-this.options.zoomBoxWidth/2.0);
-
-														var boxControls = $('<div class="zoom-box-controls"></div>');
-
-														boxControls.append($('<div class="zoom-box-control button-next-line"><span class="ui-icon ui-icon-arrowthickstop-1-s"></span>Next Line</div>').click(this._modalMoveToLine.bind(this, 1)));
-														boxControls.append($('<div class="zoom-box-control button-previous-line"><span class="ui-icon ui-icon-arrowthickstop-1-n"></span>Previous Line</div>').click(this._modalMoveToLine.bind(this, -1)));
-														zoomBoxHolder.append($('<div class="zoom-box-control button-add-next-line"><span class="ui-icon ui-icon-plusthick"></span>Add Next Line</div>').css({position:'absolute',width:100,right:0,bottom:-25}).click(this._modalAddLine.bind(this, 1)));
-														zoomBoxHolder.append(boxControls);
 
 														zoomBoxHolder.setSize = (function(w, h) {
 															var elems = [this, this.find('#transcribe-zoom-box')];
@@ -1087,6 +1231,7 @@ $.widget("ui.transcribe", {
 														zoomBoxHolder.find('#transcribe-zoom-box')
 															.append(image_holder);
 
+														/*
 														zoomBoxHolder.resizable({
 															// handles: "ne, e, se, s, sw, w, nw, n",
 															handles: "e, se, s",
@@ -1102,7 +1247,9 @@ $.widget("ui.transcribe", {
 																	.css("height", this.options.annotationBoxHeight + this.options.zoomBoxHeight + 80);
 															}).bind(this)
 														});
+														*/
 
+														/*
 														// Create zoomed hocr line elems
 														for(var i=0;i<this.assets.length;i++) {
 															var asset = this.assets[i];
@@ -1120,6 +1267,7 @@ $.widget("ui.transcribe", {
 
 															}
 														}
+														*/
 														return zoomBoxHolder;
 		
 	},
@@ -1131,7 +1279,8 @@ $.widget("ui.transcribe", {
 	/* Begin: Data Utils */
 
 	_addAnnotation          : function (event){
-														this.imageElements[this.assetIndex].imgAreaSelect({disable:false});
+														// this.imageElements[this.assetIndex].imgAreaSelect({disable:false});
+														this._imageAreaSelector().setOptions({disable: false});
 														
 														event.preventDefault();
 														event.stopPropagation();
@@ -1145,13 +1294,20 @@ $.widget("ui.transcribe", {
 														annotation_data.asset_id = this.assets[this.assetIndex].id;
 													
 														if (this.editing_id!=null){
-															if(this.annotations[this.editing_id].marker_element)
-																this.annotations[this.editing_id].marker_element.remove();
+															// if(this.annotations[this.editing_id].marker_element)
+																// this.annotations[this.editing_id].marker_element.remove();
+
+															// If another user owns annotation, branch it
+															if(this.annotations[this.editing_id].readonly) {
+																console.log("branch annotation " + this.editing_id);
+																// spawn new editing_id
+																this.editing_id = this.annotations.length;
+															}
 															annotation_data.id = this.editing_id;
 															
 															this.annotations[this.editing_id] = annotation_data;
-															this.annotations[this.editing_id].marker_element = this._generateMarker(location, this.editing_id);
-															console.log('created new marker: ', this.annotations[annotation_data.id]);
+															// this.annotations[this.editing_id].marker_element = this._generateMarker(location, this.editing_id);
+															this.annotations[this.editing_id].marker_element = this._generateMarker(annotation_data, location);
 															if (this.options.onAnnotationUpdated!=null) {
 														 		this.options.onAnnotationUpdated.call(this, annotation_data);
 															}
@@ -1162,7 +1318,8 @@ $.widget("ui.transcribe", {
 															annotation_data.id = this.annIdCounter++;
 
 															this.annotations[annotation_data.id] = annotation_data;
-															this.annotations[annotation_data.id].marker_element = this._generateMarker(location, annotation_data.id);
+															// this.annotations[annotation_data.id].marker_element = this._generateMarker(location, annotation_data.id);
+															this.annotations[annotation_data.id].marker_element = this._generateMarker(annotation_data, location);
 															
 													  	if (this.options.onAnnotationAdded!=null){
 														 		this.options.onAnnotationAdded.call(this, annotation_data);
@@ -1172,17 +1329,19 @@ $.widget("ui.transcribe", {
 														$('.modal-status-message').text('Field added');
 														setTimeout(function() { $('.modal-status-message').fadeOut(); }, 2000);
 														
-														// this._dismissAnnotationBox();
-														this._modalMoveToLine(1);
-														this.transcribeModal.find('div.transcribe-entity-fieldsets input[type=text]').val('');
+														if(this.options.advanceToNextLineAfterAdd) {
+															this._modalMoveToLine(1);
+															this.transcribeModal.find('div.transcribe-entity-fieldsets input[type=text]').val('');
+
+														} else
+															this._dismissAnnotationBox();
 	},
 
-
 	_entityById							: function(id) {
-														for(var i=0;i<this.options.template.entities.length;i++) {
-															var entity = this.options.template.entities[i];
-															if(entity.id == id) 
-																return entity;
+													for(var i=0;i<this.options.template.entities.length;i++) {
+														var entity = this.options.template.entities[i];
+														if(entity.id == id) 
+															return entity;
 														}
 	},
 
@@ -1196,6 +1355,7 @@ $.widget("ui.transcribe", {
 	_serializeCurrentForm   : function(){	
 														var inputs = this._currentInputs();
 													
+														console.log("got entity for " + this.currentEntityId);
 														var entity = this._entityById(this.currentEntityId);
 														var result = {entity_name: entity.name, data:{}, entity_id: this.currentEntityId};
 														inputs.each(function() {

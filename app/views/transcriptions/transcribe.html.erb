@@ -4,6 +4,9 @@
 var App = function() {
 	this.assetCollectionUri = '/asset_collections/<%=@collection.id%>.json';
 	this.userTranscriptionUri = '/transcriptions/by_user/<%=@collection.id%>.json';
+	this.annotationsUri = '/asset_collections/<%=@collection.id%>/annotations.json';
+
+	this.user_id = '<%= @user.id %>';
 }
 App.prototype = {
 	init											: function() {
@@ -12,7 +15,7 @@ App.prototype = {
 															$("#transcriptions-viewer").draggable()
 	},
 
-	_handleData								: function(collection, template, transcription) {
+	_handleData								: function(collection, template, annotations) {
 		
 															this.collection = collection;
 															this.template = template;
@@ -24,8 +27,8 @@ App.prototype = {
 
 															this.playbill_view.editor = $("#transcription-area").data('transcribe');
 
-															if(transcription)
-																this.editor.setAnnotations(transcription.annotations);
+															if(annotations)
+																this.editor.setAnnotations(annotations);
 
 															this.tutorial = this._createTutorial();
 
@@ -38,12 +41,14 @@ App.prototype = {
 															// We need to collect three things asynchronously; don't call-back until we have all three
 															var collection = false;
 															var template = false;
-															var transcription = false;
-															var transcriptionFetched = false;
+															// var transcription = false;
+															var annotations = false;
+															// var transcriptionFetched = false;
+															var annotationsFetched = false;
 
 															var _callback = function() {
-																if(collection && transcriptionFetched)
-																	callback(collection, template, transcription);
+																if(collection && annotationsFetched)
+																	callback(collection, template, annotations);
 															}
 
 															this._fetchAssetCollection((function(_collection) {
@@ -59,9 +64,10 @@ App.prototype = {
 
 															}).bind(this));
 
-															$.getJSON(this.userTranscriptionUri, function(trans) { 
-																transcription = trans;
-																transcriptionFetched = true;
+															// $.getJSON(this.userTranscriptionUri, function(trans) { 
+															$.getJSON(this.annotationsUri, function(ann) { 
+																annotations = ann;
+																annotationsFetched = true;
 																_callback();
 															});
 	},
@@ -87,6 +93,8 @@ App.prototype = {
 																	zoomBoxWidth					: 600,
 																	zoomBoxHeight					: 200,
 																	annotationBoxWidth		: 860,
+																	
+																	userId								: this.user_id,
 
 																	additionalSaveParams	: {
 																														user_id: "<%= @user.id %>",

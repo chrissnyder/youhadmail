@@ -10,7 +10,8 @@ class AssetCollection
   scope :active, :conditions => { :done => false }
   
   many :assets, :sort => 'uri'
-  many :transcriptions
+  # many :transcriptions
+  many :annotations
 	belongs_to :template
   
   def front_page
@@ -18,16 +19,19 @@ class AssetCollection
   end
  
   def self.next_unseen_for_user(user)
-		trans = user.transcriptions
+		seen_collection_ids = user.annotations.map { |ann| ann.asset_collection_id }
+		logger.debug "seen ids: #{seen_collection_ids}"
 
 		# FIXME: I don't know why I can't seem to just use #collect to gather asset_collection_ids here...
     # seen = trans.collect { |t| t.asset_collection_id }
+=begin
 		seen = []
 		trans.each do |t|
 			seen << t.asset_collection_id
 		end
+=end
 
-    coll = AssetCollection.active.where(:id.nin => seen).first
+    coll = AssetCollection.active.where(:id.nin => seen_collection_ids).first
 		# logger.debug "selected unseen coll: #{p coll.id} because not in user (#{user.id})'s trans: #{seen}"
 		coll
   end 

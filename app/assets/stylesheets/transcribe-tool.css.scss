@@ -1,35 +1,11 @@
-body {
-	background: url('bg-tile.png');
-	background-color: #52708B;
-}
 
-/* Nav */
-
-ul.transcribe-page-nav {
-	position:absolute;
-	left:0;
-	top:0;
-	list-style: none;
-	height:600px;
-	overflow:auto;
-}
-
-ul.transcribe-page-nav li {
-	line-height:1px;
-}
-
-ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
-	box-shadow: 3px 3px 4px #3C3C3C;
-}
 
 /* Transcribe Area */
 
 #transcription-area {
 	width:1000px;
 	margin:20px auto;
-	-moz-box-shadow: 3px 3px 4px #000;
-	-webkit-box-shadow: 3px 3px 4px #000;
-	-box-shadow: 3px 3px 4px #000;
+	@include box-shadow(3px, 4px, #000000);
 }
 
 #transcription-area span.loading {
@@ -60,7 +36,15 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 	background-color: lime;
 	opacity:0.2;
 
+	background-color:#dedede;
+	opacity:0.8;
+
 	height:100%;
+}
+
+.transcribe-marker .transcribe-color-overlay:hover {
+	opacity:0.4;
+	border:solid #000 2px;
 }
 
 .transcribe-marker-controls {
@@ -90,7 +74,7 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 }
 
 .hocr-line {
-	background-color:yellow;
+	-background-color:yellow;
 	opacity:0.15;
 	position:absolute;
 	z-index:2;
@@ -98,11 +82,12 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 }
 
 .hocr-line:hover {
+	background-color:yellow;
 	opacity:0.5;
 }
 
 .hocr-zoomed-line:hover {
-	opacity:0.15;
+	-opacity:0.15;
 }
 
 .hocr-line.selected {
@@ -136,17 +121,20 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 .transcribe-line-bounding-box:hover {
 }
 
-.transcribe-line-bounding-box-controls {
+
+.area-select-box-controls {
 	position:absolute;
 	background-color:white;
 	border:solid black 1px;
 	font-size: 14px;
 	height:2em;
 	top:-2.3em;
-	width:230px;
+	width:130px;
+	z-index:11;
+	display:none;
 }
 
-.transcribe-line-bounding-box-controls a {
+.area-select-box-controls a {
 	padding-right:10px;
 	color: #777;
 	font-weight: bold;
@@ -155,15 +143,6 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 	text-decoration: none;
 }
 
-.transcribe-line-bounding-box-controls a:hover {
-	color:#000;
-}
-
-.transcribe-line-bounding-box-message {
-	color:#aaa;
-	font-size:12px;
-	padding:0 20px 0 10px;
-}
 
 .transcribe-image-holder {
 	position:absolute;
@@ -182,9 +161,9 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 .zoom-box-controls {
 	overflow:hidden;
 	position:absolute;
-	width:500px;
-	right:0;
-	top:-20px;
+	right: 38px;
+	top: 10px;
+	width: 300px;
 }
 
 .zoom-box-control span {
@@ -196,7 +175,7 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 	float:right;
 	width:100px;
 	background-color:white;
-	border-radius:4px;
+	@include rounded-corners(4px);
 	margin-left:10px;
 	cursor:pointer;
 	border:solid gray 1px;
@@ -211,6 +190,7 @@ ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
 div.transcribe-modal {
 	display:none;
 	position:absolute;
+	position:fixed;
 	-cursor:move;
 }
 
@@ -235,16 +215,27 @@ div.transcribe-form-holder {
 	top:0;
 	background-color:#FFF;
 	border:solid #555 1px;
-	box-shadow: 3px 3px 4px #3c3c3c;
+	@include box-shadow(3px, 4px, #000000);
+	@include rounded-corners(5px);
+	border:2px solid #2c2c2c;
 }
 
 div.transcribe-form {
 	padding: 0 20px 20px 20px;
 }
 
-span.modal-status-message {
-	color:green;
-	padding-left:20px;
+div.modal-status-message {
+	color:$success-color;
+	padding-top:10px;
+}
+
+div.delete-link {
+	padding-top:10px;
+	display:none;
+}
+
+div.delete-link a {
+	color:$warn-color;
 }
 
 ul.entity-categories {
@@ -279,7 +270,7 @@ ul.entity-categories li:hover {
 }
 
 div.entity-submenus {
-	width;200px;
+	width:150px;
 	float:left;
 }
 
@@ -363,7 +354,7 @@ div.transcribe-form-help {
 	color:#555;
 	background-color:#efefef;
 	padding:20px;
-	max-height:120px;
+	max-height:180px;
 	overflow:auto;
 }
 
@@ -415,6 +406,8 @@ div.transcribe-form-help a {
 #transcribe-zoom-box-holder {
 	position: absolute;
 	background-color:#777;
+	max-height:300px;
+	overflow:hidden;
 }
 
 #transcribe-zoom-box {
@@ -436,6 +429,14 @@ div.transcribe-form-help a {
 
 .save-button {
 	margin-top:10px;
+}
+
+.transcribe-form-next-after-add {
+	padding-left:10px;
+}
+
+.transcribe-form-next-after-add label {
+	padding-left:5px;
 }
 
 #next-document, #return-to-list {
@@ -480,10 +481,8 @@ div.transcribe-form-help a {
 	border:2px solid #2c2c2c;
 	padding:10px;
 	z-index: 99;
-	-moz-box-shadow: 3px 3px 4px #3c3c3c;
-	-webkit-box-shadow: 3px 3px 4px #3c3c3c;
-	box-shadow: 3px 3px 4px #3c3c3c;
-	border-radius:5px;
+	@include box-shadow(3px, 4px, #3c3c3c);
+	@include rounded-corners(5px);
 }
 
 #transcriptions-viewer h3 {
@@ -493,7 +492,7 @@ div.transcribe-form-help a {
 
 
 .completed-playbill {
-	box-shadow: inset 1px 1px 2px #ccc;
+	@include box-shadow(1px, 2px, #cccccc);
 	border:solid #aaa 1px;
 	background-color:white;
 	margin-bottom: 5px;
@@ -503,6 +502,7 @@ div.transcribe-form-help a {
 	-max-height:200px;
 	overflow:auto;
 	display:none;
+	max-height:450px;
 }
 
 .completed-playbill h1 {
@@ -597,8 +597,8 @@ div.transcribe-form-help a {
 .inline-tutorial-holder {
 	background-color: #eee;
 	border: 3px solid #303030;
-	border-radius: 5px 5px 5px 5px;
-	box-shadow: 0 3px 6px #000000;
+	@include rounded-corners(5px);
+	@include box-shadow(3px, 6px, #000000);
 	color: #333;
 	display: none;
 	font: 12px/15px Prelude,Arial,sans-serif;

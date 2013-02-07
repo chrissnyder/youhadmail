@@ -4,15 +4,22 @@ class ApplicationController < ActionController::Base
 	attr_accessor :current_user
 
 	def current_user
-		session[:current_user]
+		unless session[:current_user_id].nil?
+			User.find(session[:current_user_id])
+		end
 	end
 	helper_method :sessioned_user
 
 	def check_or_create_user
-		logger.debug "check_or_create_user... #{p session[:current_user]}"
-		session[:current_user] ||= User.create(:email => 'example@example.com')
-		logger.debug "created user? #{current_user.email}, #{current_user.id}"
-		current_user
+		# session[:current_user] ||= User.create(:email => 'example@example.com')
+		if current_user.nil? 
+			user = User.create(:email => 'example@example.com')
+			session[:current_user_id] = user.id
+			logger.debug "created user? #{user.email}, #{user.id}"
+			user
+		else
+			current_user
+		end
 	end
 	helper_method :check_or_create_user
 

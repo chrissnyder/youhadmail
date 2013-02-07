@@ -1,0 +1,25 @@
+body {
+	background: url('bg-tile.png');
+	background-color: #52708B;
+}
+
+
+
+/* Nav */
+
+ul.transcribe-page-nav {
+	position:absolute;
+	left:0;
+	top:0;
+	list-style: none;
+	height:600px;
+	overflow:auto;
+}
+
+ul.transcribe-page-nav li {
+	line-height:1px;
+}
+
+ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
+	@include box-shadow(3px, 4px, #3C3C3C);
+}

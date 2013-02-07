@@ -5,7 +5,7 @@ class AssetCollectionsController < ApplicationController
     @collections = AssetCollection.all.select{|b| b.assets.count>0}
   end
   
-  def show
+ def show
     @collection = AssetCollection.find(params[:id])
     respond_to do |format|
 			format.html
