@@ -14,6 +14,8 @@ Transcribe::Application.routes.draw do
 	end
   resources :annotations
 
+  match 'bio' => 'bio#fetch'
+
 	match 'about' => 'home#about'
 	match 'help' => 'home#help'
 
