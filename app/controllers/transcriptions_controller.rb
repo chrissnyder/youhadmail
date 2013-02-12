@@ -3,6 +3,7 @@ class TranscriptionsController < ApplicationController
   before_filter :check_or_create_user, :only => [:transcribe, :index, :edit, :create]
   # before_filter :get_or_assign_collection, :only => [:next, :transcribe]
   after_filter :clear_session, :only =>[ :create ]
+  respond_to :json, :html
   
   def transcribe
 		logger.debug "#{p params}"
@@ -122,6 +123,10 @@ class TranscriptionsController < ApplicationController
 			}
 		end
 	end
+  
+  def annotations
+    respond_with Asset.annotations(params.fetch(:filters, { })).all
+  end
   
   def get_or_assign_collection
     @collection = AssetCollection.find(session[:collection_id])
