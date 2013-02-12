@@ -1,15 +1,15 @@
-# GET /bio?name=Nikola+Tesla
+# GET /bio?q=Nikola+Tesla
 
 class BioController < ApplicationController
   ENDPOINT = 'http://en.wikipedia.org/w/api.php'
   BASE_URL = 'http://en.wikipedia.org/wiki'
 
   def fetch
-    render_error('The "name" parameter is required.') && return unless params[:name]
+    render_error('The "q" parameter is required.') && return unless params[:q]
     res = {}
 
     options = {
-      :titles          => params[:name],
+      :titles          => params[:q],
       :action          => 'query',
       :format          => 'json',
       :redirects       => true,                  # Automatically resolve redirects
@@ -33,12 +33,12 @@ class BioController < ApplicationController
 
           if page
             # Replace whitespace in the title with underscores
-            url = BASE_URL + '/' + page['title'].try(:sub, /\s/, '_')
+            url = BASE_URL + '/' + page['title'].try(:gsub, /\s/, '_')
 
             # Ensure the image is 80px wide
             image = page['thumbnail'].try(:[], 'source').try(:sub, /\/(\d)+(px)\-/, '/80px-')
 
-            # Remove parenthesis
+            # Remove first parenthesis (phonetic spelling)
             excerpt = page['extract'].try(:sub, /\(.+\)\s/, '')
 
             res = {
