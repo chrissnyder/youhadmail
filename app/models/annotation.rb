@@ -7,6 +7,8 @@ class Annotation
   key :bounds, Hash # this is x-rel,  y-rel, with-rel, height-rel measure (0..1)
   key :data, Hash # A hash looking something like :field_key => "Some value"
   
+  after_save :denormalize_to_asset
+  
   timestamps!
   
   # belongs_to :transcription
@@ -23,4 +25,12 @@ class Annotation
 			:entity_id => entity.id,
 		}
 	end
+  
+  def denormalize_to_asset
+    Asset.collection.update({ _id: asset_id }, {
+      :$addToSet => {
+        "annotations.#{ entity.name }" => data
+      }
+    })
+  end
 end
