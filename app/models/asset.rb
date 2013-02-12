@@ -22,14 +22,14 @@ class Asset
   def self.annotations(filter = { })
     pipeline = where
     
-    filter.each_pair do |key, value|
+    filter.try :each_pair do |key, value|
       pipeline = pipeline.match annotation_filter(key, value)
     end
     
     pipeline.project(annotations: true)
       .unwind('$annotations')
       .project(annotation: '$annotations')
-      .group(_id: '$annotation.key', values: {
+      .group(_id: '$annotation.key', asset_id: { :$first => '$_id' }, values: {
         :$addToSet => '$annotation.value'
       })
   end
