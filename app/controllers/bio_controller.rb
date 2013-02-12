@@ -2,6 +2,7 @@
 
 class BioController < ApplicationController
   ENDPOINT = 'http://en.wikipedia.org/w/api.php'
+  BASE_URL = 'http://en.wikipedia.org/wiki'
 
   def fetch
     res = {}
@@ -35,8 +36,9 @@ class BioController < ApplicationController
 
             res = {
               :title   => page['title'],
-              :excerpt => page['extract'],
-              :image   => image
+              :url     => "#{BASE_URL}/#{page['title']}",
+              :image   => image,
+              :excerpt => page['extract']
             }
           end
         rescue JSON::ParserError => e
