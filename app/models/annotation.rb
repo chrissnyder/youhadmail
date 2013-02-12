@@ -7,7 +7,7 @@ class Annotation
   key :bounds, Hash # this is x-rel,  y-rel, with-rel, height-rel measure (0..1)
   key :data, Hash # A hash looking something like :field_key => "Some value"
   
-  after_save :denormalize_to_asset
+  after_create :denormalize_to_asset
   
   timestamps!
   
