@@ -10,6 +10,7 @@ class Asset
   key :uri, String, :required => true
   key :ext_ref, String
   key :order, Integer
+  key :annotations, Array
   
   scope :in_collection, lambda { |asset_collection| where(:asset_collection_id => asset_collection.id)}
 
@@ -17,6 +18,21 @@ class Asset
   
   # belongs_to :template
   belongs_to :asset_collection
+  
+  def self.annotations(filter = { })
+    pipeline = where
+    
+    filter.each_pair do |key, value|
+      pipeline = pipeline.match annotation_filter(key, value)
+    end
+    
+    pipeline.project(annotations: true)
+      .unwind('$annotations')
+      .project(annotation: '$annotations')
+      .group(_id: '$annotation.key', values: {
+        :$addToSet => '$annotation.value'
+      })
+  end
   
 	def signed_uri 
 		# https://s3.amazonaws.com/programs-cropped.nypl.org/10/00030.jpg
@@ -75,4 +91,17 @@ class Asset
 			:fladeedle => 'doo'
 		}
 	end
+  
+  protected
+  def self.annotation_filter(key, value)
+    if value.is_a?(Hash)
+      { 'annotations.key' => key }.tap do |filter|
+        value.each_pair{ |k, v| filter["annotations.value.#{ k }"] = v }
+      end
+    elsif value
+      { 'annotations.key' => key, 'annotations.value' => value }
+    else
+      { 'annotations.key' => key }
+    end
+  end
 end
