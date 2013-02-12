@@ -32,11 +32,12 @@ class BioController < ApplicationController
 
           if page
             # Ensure the image is 80px wide
+            url = BASE_URL + '/' + page['title'].try(:sub, /\s/, '_')
             image = page['thumbnail'].try(:[], 'source').try(:sub, /\/(\d)+(px)\-/, '/80px-')
 
             res = {
               :title   => page['title'],
-              :url     => "#{BASE_URL}/#{page['title']}",
+              :url     => url,
               :image   => image,
               :excerpt => page['extract']
             }
