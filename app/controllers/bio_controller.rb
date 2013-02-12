@@ -32,15 +32,20 @@ class BioController < ApplicationController
           page = json['query'].try(:[], 'pages').try(:shift).try(:pop)
 
           if page
-            # Ensure the image is 80px wide
+            # Replace whitespace in the title with underscores
             url = BASE_URL + '/' + page['title'].try(:sub, /\s/, '_')
+
+            # Ensure the image is 80px wide
             image = page['thumbnail'].try(:[], 'source').try(:sub, /\/(\d)+(px)\-/, '/80px-')
+
+            # Remove parenthesis
+            excerpt = page['extract'].try(:sub, /\(.+\)\s/, '')
 
             res = {
               :name    => page['title'],
               :url     => url,
               :image   => image,
-              :excerpt => page['extract']
+              :excerpt => excerpt
             }
           end
         rescue JSON::ParserError => e
