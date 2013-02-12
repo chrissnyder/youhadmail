@@ -69,7 +69,7 @@ class Asset
 			:id => id, 
 			:width => width, 
 			:height => height, 
-			:hocr_blocks => hocr_blocks, 
+			:hocr_blocks =>[], # hocr_blocks, 
 			:uri => signed_uri.to_s,
 			:thumb_uri => thumb_uri,
 			:fladeedle => 'doo'

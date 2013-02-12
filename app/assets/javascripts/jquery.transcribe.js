@@ -963,6 +963,7 @@ $.widget("ui.transcribe", {
 														var id = "transcribe-field-" + field.field_key;
 														var label = $('<label for="' + id + '">' + field.name + "</label>");
 														inputDiv.append(label)
+														console.log("field.field.kind ",field.kind)
 														switch(field.kind){
 															case("text"):
 																result=$("<input>");
@@ -1001,6 +1002,7 @@ $.widget("ui.transcribe", {
 																result.attr('placeholder', 'MM/DD/YYYY');
 																break;
 													 }
+
 													 result.data('field-key', field.field_key);
 													 return inputDiv.append(result);
 	},

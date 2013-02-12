@@ -21,8 +21,8 @@ var PlaybillView = function(elem_id, template) {
 		if(['Cast Member','Advertisement'].indexOf(label) >= 0)
 			label = label + 's';
 		this.containers[entity.id] = $('<li></li>')
-			.append($('<span class="entity-label">' + label + '</span>'))
-			.append($('<span class="placeholder">Not entered</span>')
+			.append($('<span class="entity-label">' + label + ':</span>'))
+			.append($('<span class="placeholder"></span>')
 				.append($('<a href="javascript:void(0);">Help</a>').click((function(entityId) {
 					this.editor.showHelp(entityId);
 				}).bind(this, entity.id)))

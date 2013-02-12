@@ -6,7 +6,10 @@ task :you_had_mail_bootstrap => :environment do
 
 	Transcription.delete_all
 	Annotation.delete_all
- 
+
+	AssetCollection.delete_all
+	Asset.delete_all
+ 	
   template = Template.create( :name => "You Had Mail Template",
                               :description => "A template for you had mail",
                               :project => "My great project",
@@ -53,12 +56,14 @@ task :you_had_mail_bootstrap => :environment do
 	entity.fields << Field.new( 
 		:name => "First Name",
 		:field_key => "first_name",
-		:kind => { :text => { :max_length => 120, :min_length => 0 }}
+		:kind => "text",
+		:options => { :text => { :max_length => 120, :min_length => 0 }}
 	)
 	entity.fields << Field.new(
 		:name => "Last Name",
 		:field_key => "last_name",
-		:kind => { :text => { :max_length => 120, :min_length => 0 }})
+		:kind => "text",
+		:options => { :text => { :max_length => 120, :min_length => 0 }})
   template.entities << entity
 
 	# Dates 
@@ -179,14 +184,14 @@ task :you_had_mail_bootstrap => :environment do
 	
 template.save 
 
-=begin
+begin
   #generate a single asset and a single user for testing just now
-  playbill = AssetCollection.create(:title => "Playbill 1", :author => "", :extern_ref => "http://google.com", :template => template)
+  playbill = AssetCollection.create(:title => "Test Letter", :author => "", :extern_ref => "http://google.com", :template => template)
 
-  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00030.jpg", :display_width => 1000, :height => 1537, :width => 1000, :asset_collection => playbill, :order => 0)
-  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00031.1.jpg", :display_width => 1000, :height => 1540, :width => 1000, :asset_collection => playbill, :order => 1)
-  Asset.create(:uri => "https://s3.amazonaws.com/programs-cropped.nypl.org/10/00031.2.jpg", :display_width => 1000, :height => 1540, :width => 1000, :asset_collection => playbill, :order => 2)
-=end
+  Asset.create(:uri => "/example_assets/AlvanClark_X7_1_1.jpg", :display_width => 1275, :height => 1650, :width => 1275, :asset_collection => playbill, :order => 0)
+  Asset.create(:uri => "/example_assets/AlvanClark_X7_1_2.jpg", :display_width => 1275, :height => 1650, :width => 1275, :asset_collection => playbill, :order => 1)
+  Asset.create(:uri => "/example_assets/AlvanClark_X7_1_3.jpg", :display_width => 1275, :height => 1650, :width => 1275, :asset_collection => playbill, :order => 2)
+end
 
 =begin
  	public/images/00024.jpg JPEG 1000x1497 1000x1497+0+0 8-bit PseudoClass 256c 556KB 0.000u 0:00.000

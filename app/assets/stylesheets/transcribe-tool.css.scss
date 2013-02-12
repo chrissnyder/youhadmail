@@ -1,7 +1,7 @@
 
 body#transcriptions_controller {
 	background-color: #52708B;
-	background: url('bg-tile.png');
+	background: url('light-grey.jpg');
 }
 
 
@@ -32,8 +32,12 @@ body#transcriptions_controller {
 
 /* Transcribe Area */
 
+.rightBar{
+	display: inline-block
+}
+
 #transcription-area {
-	width:1000px;
+	min-width:800px;
 	margin:20px auto;
 	@include box-shadow(3px, 4px, #000000);
 }
@@ -428,7 +432,7 @@ div.transcribe-form-help a {
 #transcribe-zoom-box-holder .ui-resizable-se {
 	width:10px;
 	height:10px;
-	-background-image:none;
+	background-image:none;
 	right:-5px;
 	bottom:-5px;
 }
@@ -502,14 +506,8 @@ div.transcribe-form-help a {
 }
 
 #transcriptions-viewer {
-	position:fixed;
-	top:20px;
-	left:100%;
-	margin-left: -340px;
-	display:none;
-	background: #EEE;
-	border:2px solid #2c2c2c;
-	padding:10px;
+	display:block;
+	width: 100%;
 	z-index: 99;
 	@include box-shadow(3px, 4px, #3c3c3c);
 	@include rounded-corners(5px);
@@ -523,16 +521,14 @@ div.transcribe-form-help a {
 
 .completed-playbill {
 	@include box-shadow(1px, 2px, #cccccc);
-	border:solid #aaa 1px;
-	background-color:white;
+
 	margin-bottom: 5px;
-	padding: 10px;
 	font-size: 14px;
 	overflow: hidden;
-	-max-height:200px;
 	overflow:auto;
 	display:none;
-	max-height:450px;
+	max-height: 270px;
+
 }
 
 .completed-playbill h1 {
@@ -545,17 +541,30 @@ div.transcribe-form-help a {
 }
 
 .completed-playbill li {
-	margin-bottom:20px;
+	height: 20px;
+	width: 100%;
+	padding: 35px;
+	margin:none;
+	border-bottom: 1px solid #C2C2C2;
+	border-top: 1px solid #DFDFDF;
 }
 
 .completed-playbill li .entity-label {
 	font-weight:bold;
-	padding-right:10px;
+	font-style:italic;
+	padding: 0px;
+	margin: 0px;
+	font-size: 14px;
+	color: #8a8a8a;
 }
 
 .completed-playbill li .placeholder {
 	-color:#777;
 	color:#b55;
+	margin-left: 45px;
+	font-size: 20px;
+	color: #151515;
+	font-weight: 200;
 }
 
 .completed-playbill li ul {
@@ -567,7 +576,7 @@ div.transcribe-form-help a {
 }
 
 .completed-playbill a { 
-	display:block;
+	display:none;
 	width:30px;
 	font-size:12px;
 	font-family:sans-serif;

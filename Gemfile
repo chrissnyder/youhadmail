@@ -30,6 +30,9 @@ gem 'rmagick', :require => 'RMagick'
 gem 'aws-sdk'
 gem 'curb'
 
+
+gem 'pry'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
