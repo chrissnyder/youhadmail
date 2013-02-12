@@ -21,17 +21,21 @@ class Asset
   
   def self.annotations(filter = { })
     pipeline = where
+    matchers = filter.each_pair.collect{ |key, value| annotation_filter(key, value) } || []
+    matchers.each{ |matcher| pipeline = pipeline.match matcher }
     
-    filter.try :each_pair do |key, value|
-      pipeline = pipeline.match annotation_filter(key, value)
-    end
+    pipeline = pipeline.project(annotations: true, uri: true, asset_collection_id: true).unwind '$annotations'
+    matchers.each{ |matcher| pipeline = pipeline.match matcher }
     
-    pipeline.project(annotations: true)
-      .unwind('$annotations')
-      .project(annotation: '$annotations')
-      .group(_id: '$annotation.key', asset_id: { :$first => '$_id' }, values: {
-        :$addToSet => '$annotation.value'
-      })
+    pipeline.group({
+      _id: '$annotations.key',
+      asset_id: { :$first => '$_id' },
+      uri: { :$first => '$uri' },
+      asset_collection_id: { :$first => '$asset_collection_id' },
+      values: {
+        :$addToSet => '$annotations.value'
+      }
+    })
   end
   
 	def signed_uri 
@@ -96,10 +100,10 @@ class Asset
   def self.annotation_filter(key, value)
     if value.is_a?(Hash)
       { 'annotations.key' => key }.tap do |filter|
-        value.each_pair{ |k, v| filter["annotations.value.#{ k }"] = v }
+        value.each_pair{ |k, v| filter["annotations.value.#{ k }"] = /\A#{ Regexp.escape v }/i }
       end
     elsif value
-      { 'annotations.key' => key, 'annotations.value' => value }
+      { 'annotations.key' => key, 'annotations.value' => /\A#{ Regexp.escape value }/i }
     else
       { 'annotations.key' => key }
     end

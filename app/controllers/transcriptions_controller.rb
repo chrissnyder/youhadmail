@@ -125,7 +125,7 @@ class TranscriptionsController < ApplicationController
 	end
   
   def annotations
-    respond_with Asset.annotations(params[:filters]).all
+    respond_with Asset.annotations(params.fetch(:filters, { })).all
   end
   
   def get_or_assign_collection
