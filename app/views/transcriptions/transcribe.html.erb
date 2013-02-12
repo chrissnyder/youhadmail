@@ -184,6 +184,9 @@ App.prototype = {
 $(document).ready(function(){
 
 	(new App()).init(); 
+
+	metaViewer = new MetaDataViewer("#MetaDataViewer")
+	metaViewer.render()
 	
 });
 
@@ -200,6 +203,8 @@ $(document).ready(function(){
 		<div id="done-button-holder"><button id ="done-button">Save</button></div>
 
 	</div>
+
+	<div id='MetaDataViewer'></div>
 </div>
 
 <div class='rightBar'>
