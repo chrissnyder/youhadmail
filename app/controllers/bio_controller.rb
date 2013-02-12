@@ -36,7 +36,7 @@ class BioController < ApplicationController
             image = page['thumbnail'].try(:[], 'source').try(:sub, /\/(\d)+(px)\-/, '/80px-')
 
             res = {
-              :title   => page['title'],
+              :name    => page['title'],
               :url     => url,
               :image   => image,
               :excerpt => page['extract']
