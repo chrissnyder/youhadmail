@@ -27,10 +27,6 @@ class Annotation
 	end
   
   def denormalize_to_asset
-    Asset.collection.update({ _id: asset_id }, {
-      :$addToSet => {
-        "annotations.#{ entity.name }" => data
-      }
-    })
+    asset.add_to_set annotations: { key: entity.name, value: data }
   end
 end
