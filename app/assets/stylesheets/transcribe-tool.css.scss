@@ -179,13 +179,13 @@ body#transcriptions_controller {
 
 
 .transcribe-image-holder {
-	position:absolute;
-	right:0;
-	top:0;
+	text-align: center;
 }
 
 .transcribe-image-holder img {
-	display:none;
+	display: none;
+	box-shadow: 0 0 15px 0 #777;
+	max-width: 90%;
 }
 
 #transcribe-zoom-box img {
