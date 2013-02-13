@@ -27,6 +27,7 @@ class BioController < ApplicationController
       curl.on_body do |body|
         begin
           json = JSON.parse(body)
+          logger.info("  \033[0;36mWikipedia Response: \033[0;00m#{json}")
 
           # Try to get the page
           page = json['query'].try(:[], 'pages').try(:shift).try(:pop)
@@ -38,15 +39,17 @@ class BioController < ApplicationController
             # Ensure the image is 80px wide
             image = page['thumbnail'].try(:[], 'source').try(:sub, /\/(\d)+(px)\-/, '/80px-')
 
-            # Remove first parenthesis (phonetic spelling)
-            excerpt = page['extract'].try(:sub, /\(.+\)\s/, '')
+            # Remove phonetic spelling and birth/death dates
+            excerpt = page['extract'].try(:sub, /<\/b>.+?\)/, '</b>')
 
-            res = {
-              :name    => page['title'],
-              :url     => url,
-              :image   => image,
-              :excerpt => excerpt
-            }
+            if excerpt && !excerpt.match(/may refer to/)
+              res = {
+                :name    => page['title'],
+                :url     => url,
+                :image   => image,
+                :excerpt => excerpt
+              }
+            end
           end
         rescue JSON::ParserError => e
           logger.error("Could not parse the response body: #{e}")
