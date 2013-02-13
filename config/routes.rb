@@ -8,11 +8,14 @@ Transcribe::Application.routes.draw do
   match 'transcriptions/transcribe/:id' => 'transcriptions#transcribe'
   match 'transcriptions/by_user/:collection_id' => 'transcriptions#by_user'
   match 'transcriptions/terms/:entity_id/:field_key' => 'transcriptions#terms'
+  match 'transcriptions/annotations' => 'transcriptions#annotations', defaults: { format: 'json' }
   resources :transcriptions
   resources :asset_collections do
 		resources :annotations
 	end
   resources :annotations
+
+  match 'bio' => 'bio#fetch'
 
 	match 'about' => 'home#about'
 	match 'help' => 'home#help'

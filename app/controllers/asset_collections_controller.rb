@@ -7,6 +7,7 @@ class AssetCollectionsController < ApplicationController
   
  def show
     @collection = AssetCollection.find(params[:id])
+    
     respond_to do |format|
 			format.html
 			format.json { 	

@@ -30,7 +30,7 @@ App.prototype = {
 															if(annotations)
 																this.editor.setAnnotations(annotations);
 
-															this.tutorial = this._createTutorial();
+															// this.tutorial = this._createTutorial();
 
 															$('#done-button').attr('disabled','disabled');
 
@@ -184,6 +184,9 @@ App.prototype = {
 $(document).ready(function(){
 
 	(new App()).init(); 
+
+	metaViewer = new MetaDataViewer("#MetaDataViewer")
+	metaViewer.render()
 	
 });
 
@@ -192,26 +195,25 @@ $(document).ready(function(){
 <% end %>
 
 
-<%= render :partial => '/nav' %>
+<div class='leftBar'>
 
-<!-- page div is main transcription item -->
-<div id="transcription-area"><span class="loading">Loading <img src="/assets/spinner.gif" /></span></div>
+	<div id="transcriptions-viewer">
+		
+		<div class="completed-playbill"></div>
+		<div id="done-button-holder"><button id ="done-button">Save</button></div>
 
+	</div>
 
-
-<div id="transcriptions-viewer">
-	<h3>Transcriptions</h3>
-	<p id="transcription-instructions">Click and drag over the document to add transcriptions.</p>
-
-	<div class="completed-playbill"></div>
-
-	<p id="save-instructions">Click "Save" to commit your transcriptions.</p>
-	<div id="done-button-holder"><button id ="done-button">Save</button></div>
-
-	<p id="next-document"><a href="/transcriptions/next">Next Playbill &raquo;</a></p>
-	<p id="return-to-list"><a href="/">&laquo; Return to List</a></p>
-
+	<div id='MetaDataViewer'></div>
 </div>
 
-<div id="footer"></div>
+<div class='rightBar'>
+
+<!-- page div is main transcription item -->
+	<div id="transcription-area"><span class="loading">Loading <img src="/assets/spinner.gif" /></span></div>
+</div>
+
+
+
+<%= render :partial => '/nav' %>
 
