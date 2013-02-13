@@ -27,6 +27,7 @@ class BioController < ApplicationController
       curl.on_body do |body|
         begin
           json = JSON.parse(body)
+          logger.info("  \033[0;36mWikipedia Response: \033[0;00m#{json}")
 
           # Try to get the page
           page = json['query'].try(:[], 'pages').try(:shift).try(:pop)
