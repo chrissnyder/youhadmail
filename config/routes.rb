@@ -1,7 +1,7 @@
 Transcribe::Application.routes.draw do
   resources :templates
 
-  root :to => 'asset_collections#index'
+  root :to => 'home#welcome'
 
   match 'transcriptions/next' => 'transcriptions#next'
   match 'transcriptions/transcribe' => 'transcriptions#transcribe'

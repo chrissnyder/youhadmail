@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Transcribe</title>
+  <title>Open Letters</title>
 
   <%= stylesheet_link_tag "application", :media => "all" %>
   <%= stylesheet_link_tag 'http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css' %>
@@ -17,7 +17,7 @@
 
 
 </head>
-<body id="<%= params[:controller].parameterize %>_controller">  
+<body id="<%= params[:controller].parameterize %>_controller" class="<%= params[:action].parameterize %>">
 
 <%= yield %>
 

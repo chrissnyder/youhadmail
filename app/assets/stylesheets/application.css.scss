@@ -28,6 +28,13 @@ $success-color: green;
 	box-shadow: $dist, $dist, $blur, $color;
 }
 
+@mixin clearfix() {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
 
 @import "fonts.css";
 @import "reset.css";
