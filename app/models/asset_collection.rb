@@ -13,6 +13,7 @@ class AssetCollection
   # many :transcriptions
   many :annotations
 	belongs_to :template
+  belongs_to :archive
   
   def front_page
     self.assets.where.order(:order).first
