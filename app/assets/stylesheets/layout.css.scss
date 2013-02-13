@@ -1,6 +1,6 @@
 .content-container {
-	width:$layout-width;
-	margin:0 auto;
+	margin: 0 auto;
+	width: $layout-width;
 }
 
 body {
@@ -8,23 +8,6 @@ body {
 }
 
 /* Nav */
-
-
-#header {
-	background-color: #fff;
-	border-top: 1px solid #3c3c3c;
-	padding:10px 0;
-	position: relative;
-	&:before {
-		border-top: 1px solid #000;
-		content: '';
-		height: 0px;
-		left: 0;
-		position: absolute;
-		top: -2px;
-		width: 100%;
-	}
-}
 
 ul.transcribe-page-nav {
 	display: none;

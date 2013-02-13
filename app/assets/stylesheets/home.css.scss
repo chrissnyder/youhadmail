@@ -3,26 +3,45 @@ html, body{
 	height: 100%;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
-#header{
-	position:fixed ;
+
+#header {
+	background: #000;
+	border-top: 1px solid #3c3c3c;
+	box-sizing: border-box;
 	bottom: 0px;
+	color: #fff;
+	height: 67px;
 	left: 0px;
-	background-color: black;
-	color: white;
-	height: 18px;
 	padding: 25px;
+	position: fixed;
 	width: 100%;
 	z-index: 1000;
-}
 
-#header .content-container{
-	width: 1200px
-}
+	&:before {
+		border-top: 1px solid #000;
+		content: '';
+		height: 0px;
+		left: 0;
+		position: absolute;
+		top: -2px;
+		width: 100%;
+	}
 
-#header h1 {
-	font-size:32px;
-}
+	h1 {
+		font-size: 32px;
+	}
 
+	.logos {
+		position: absolute;
+		right: 5px;
+		top: 10px;
+
+		img {
+			margin-left: 25px;
+			vertical-align: middle;
+		}
+	}
+}
 
 .leftBar {
 	background-image: url(/assets/dark-grey.jpg); 
