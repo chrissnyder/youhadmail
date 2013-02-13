@@ -1,15 +1,13 @@
 .content-container {
-	width:$layout-width;
-	margin:0 auto;
+	margin: 0 auto;
+	width: $layout-width;
+}
+
+body {
+	overflow-x: hidden;
 }
 
 /* Nav */
-
-
-#header {
-	background-color:#fff;
-	padding:10px 0;
-}
 
 ul.transcribe-page-nav {
 	display: none;

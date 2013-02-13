@@ -3,39 +3,79 @@ html, body{
 	height: 100%;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
-#header{
-	position:fixed ;
+
+#header {
+	background: #000;
+	border-top: 1px solid #3c3c3c;
+	box-sizing: border-box;
 	bottom: 0px;
+	color: #fff;
+	height: 67px;
 	left: 0px;
-	background-color: black;
-	color: white;
-	height: 18px;
 	padding: 25px;
+	position: fixed;
 	width: 100%;
+	z-index: 1000;
+
+	&:before {
+		border-top: 1px solid #000;
+		content: '';
+		height: 0px;
+		left: 0;
+		position: absolute;
+		top: -2px;
+		width: 100%;
+	}
+
+	h1 {
+		font-size: 32px;
+	}
+
+	a {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	.logos {
+		position: absolute;
+		right: 5px;
+		top: 10px;
+
+		img {
+			margin-left: 25px;
+			vertical-align: middle;
+		}
+	}
 }
 
-#header .content-container{
-	width: 1200px
-}
-
-#header h1 {
-	font-size:32px;
-
-}
-
-
-.leftBar{
-	width: 355px ;
-	height: 100%;
+.leftBar {
 	background-image: url(/assets/dark-grey.jpg); 
 	background-repeat: repeat;
 	display: inline-block;
+	height: 100%;
+	overflow-y: scroll;
 	vertical-align: top;
+	width: 355px;
+}
+
+.rightBar {
+	border-left: 1px solid #c2c2c2;
+	height: 100%;
+	overflow-y: scroll;
+	position: absolute;
+	top: 0;
+	left: 355px;
 }
 /* nav */
 
 #MetaDataViewer{
 
+
+}
+
+
+#MetaDataViewer .mediaTypes .metaPane.pulse h3{
+	color : red;
 
 }
 
@@ -50,6 +90,16 @@ html, body{
 	border-top: 1px solid white ;
 }
 
+#MetaDataViewer ul li:not(.active) h3 {
+	background: rgb(238,238,238); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(238,238,238,1) 50%, rgba(224,224,224,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(50%,rgba(238,238,238,1)), color-stop(100%,rgba(224,224,224,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
+}
 
 #MetaDataViewer ul li .metaContent{
 	display:none;
@@ -58,6 +108,22 @@ html, body{
 #MetaDataViewer ul li.active .metaContent{
 	display:block
 }
+	
+.metaContent .bio img{
+	width: 80px;
+	height: 80px; 
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 20px;
+}
+
+.metaContent .bio p {
+	width: 180px;
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 20px
+}
+
 #MetaDataViewer ul h3{
 	text-align: right;
 	font-size: 11px;
