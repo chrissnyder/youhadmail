@@ -1,5 +1,8 @@
 class Searcher
-  base: '/transcriptions/annotations/?filter'
+  base: '/transcriptions/annotations/?'
+
+  @baseUrl: ->
+    return base
 
   constructor: ->
     @filters = []
@@ -24,20 +27,26 @@ class Searcher
     url = ''
     for filter in @filters
       for key, value of filter
-        url += "[#{key}]=#{value}"
+        url = 'filter'
+        keys = key.split ':'
 
-    url = @base + url
+        for key of keys
+          url += "[#{key}]"
+
+        url += "=#{value}&"
+
+    url = @base + url.slice(0, url.length - 1)
     $.getJSON url, (result) ->
       cb result
 
 window.Searcher = Searcher
 
-# s = new Searcher
-# s.filter('to','first');
-# s.filter
-#   city: 'chicago'
-#   provence: 'IL'
+s = new Searcher
+s.filter('to:first_name','first');
+s.filter
+  city: 'chicago'
+  provence: 'IL'
 
-# s.go (data) ->
-#   console.log data
+s.go (data) ->
+  console.log data
 
