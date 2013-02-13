@@ -1,14 +1,15 @@
-# GET /bio?name=Nikola+Tesla
+# GET /bio?q=Nikola+Tesla
 
 class BioController < ApplicationController
   ENDPOINT = 'http://en.wikipedia.org/w/api.php'
   BASE_URL = 'http://en.wikipedia.org/wiki'
 
   def fetch
+    render_error('The "q" parameter is required.') && return unless params[:q]
     res = {}
 
     options = {
-      :titles          => params[:name],
+      :titles          => params[:q],
       :action          => 'query',
       :format          => 'json',
       :redirects       => true,                  # Automatically resolve redirects
@@ -31,23 +32,34 @@ class BioController < ApplicationController
           page = json['query'].try(:[], 'pages').try(:shift).try(:pop)
 
           if page
+            # Replace whitespace in the title with underscores
+            url = BASE_URL + '/' + page['title'].try(:gsub, /\s/, '_')
+
             # Ensure the image is 80px wide
-            url = BASE_URL + '/' + page['title'].try(:sub, /\s/, '_')
             image = page['thumbnail'].try(:[], 'source').try(:sub, /\/(\d)+(px)\-/, '/80px-')
+
+            # Remove first parenthesis (phonetic spelling)
+            excerpt = page['extract'].try(:sub, /\(.+\)\s/, '')
 
             res = {
               :name    => page['title'],
               :url     => url,
               :image   => image,
-              :excerpt => page['extract']
+              :excerpt => excerpt
             }
           end
         rescue JSON::ParserError => e
-          logger.error "Could not parse the response body: #{e}"
+          logger.error("Could not parse the response body: #{e}")
+          render_error("Could not parse the response body. Check the error log.") && return
         end
       end
     end
 
     render :json => res
   end
+
+  private
+    def render_error(message)
+      render :json => { :error => message }
+    end
 end
