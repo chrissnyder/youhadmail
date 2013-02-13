@@ -52,7 +52,7 @@ GEM
     hike (1.2.1)
     i18n (0.6.1)
     journey (1.0.4)
-    jquery-rails (2.2.1)
+    jquery-rails (2.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.7.7)
@@ -68,7 +68,7 @@ GEM
       activemodel (~> 3.0)
       activesupport (~> 3.0)
       plucky (~> 0.5.2)
-    multi_json (1.5.1)
+    multi_json (1.6.0)
     nokogiri (1.5.6)
     plucky (0.5.2)
       mongo (~> 1.5)
@@ -132,7 +132,7 @@ DEPENDENCIES
   bson_ext
   coffee-rails (~> 3.2.1)
   curb
-  jquery-rails
+  jquery-rails (= 2.1.4)
   mongo_mapper
   pry
   rails (= 3.2.8)

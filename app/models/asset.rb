@@ -25,7 +25,7 @@ class Asset
     matchers.each{ |matcher| pipeline = pipeline.match matcher }
     
     pipeline = pipeline.project(annotations: true, uri: true, asset_collection_id: true).unwind '$annotations'
-    matchers.each{ |matcher| pipeline = pipeline.match matcher }
+    pipeline.match :$or => matchers
     
     pipeline.group({
       _id: '$annotations.key',
