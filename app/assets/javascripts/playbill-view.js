@@ -40,34 +40,14 @@ PlaybillView.prototype = {
 	addEntity:	function(entity) {
 
 		$("#transcription-instructions").hide();
-		$("#transcriptions-viewer").resizable({
-			minWidth:200,
-			minHeight:200,
-			maxWidth:800,
-			maxHeight:1200,
-			alsoResize: '#transcriptions-viewer .completed-playbill'
-		});
+		
 
 		this.entities.push(entity);
 
 		entity.elem = this.elemByEntity(entity);
 		entity.elem.setData(entity.data);
-		entity.elem
-			.prepend($('<a href="javascript:void(0);">Edit</a>')
-				.click(this.editor.editAnnotation.bind(this.editor, entity.id))
-			);
 
-		if(this.containers[entity.entity_id].find('.placeholder').length == 1)
-			this.containers[entity.entity_id].find('.placeholder').remove();
-
-		if($(entity.elem).is('li')) {
-			if(this.containers[entity.entity_id].find('ul').length == 0)
-				this.containers[entity.entity_id].append($('<ul></ul>'));
-			this.containers[entity.entity_id].find('ul').append(entity.elem);
-
-		} else {	
-			this.containers[entity.entity_id].append(entity.elem);
-		}
+		this.containers[entity.entity_id].append(entity.elem);
 
 		// console.log('added elem: %o to %o ' + entity.kind, entity.elem, this.containers[entity.kind]);
 	},
@@ -119,13 +99,13 @@ PlaybillView.prototype = {
 				break;
 
 			default:
-				elem = $('<li><span class="value-holder"></span></li>');
+				elem = $('<span class="value-holder"></span>');
 				elem.setData = (function(data) { 
 					var s = '';
 					for(var k in data) {
 						s += (s?', ':'') + data[k];
 					}
-					this.find('.value-holder').text(s); 
+					this.text(s); 
 				}).bind(elem);
 		}
 		var _id = entity.id;
