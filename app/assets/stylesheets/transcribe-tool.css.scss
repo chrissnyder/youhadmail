@@ -179,13 +179,17 @@ body#transcriptions_controller {
 
 
 .transcribe-image-holder {
-	position:absolute;
-	right:0;
-	top:0;
+	text-align: center;
+
+	div {
+		text-align: left;
+	}
 }
 
 .transcribe-image-holder img {
-	display:none;
+	display: none;
+	box-shadow: 0 0 15px 0 #777;
+	max-width: 90%;
 }
 
 #transcribe-zoom-box img {
@@ -283,7 +287,7 @@ ul.entity-categories li {
 	line-height:50px;
 	background-repeat:no-repeat;
 	background-position:10px center;
-	padding-left:60px;
+	padding-left:20px;
 	background-size:40px;
 	cursor:pointer;
 	background-color:#efefef;

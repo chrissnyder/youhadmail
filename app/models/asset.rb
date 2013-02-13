@@ -16,9 +16,8 @@ class Asset
 
   timestamps!
   
-  # belongs_to :template
   belongs_to :asset_collection
-  
+
   def self.annotations(filter = { })
     pipeline = where
     matchers = filter.each_pair.collect{ |key, value| annotation_filter(key, value) } || []
@@ -39,38 +38,38 @@ class Asset
   end
   
 	def signed_uri 
-		# https://s3.amazonaws.com/programs-cropped.nypl.org/10/00030.jpg
+    self.class.sign_uri(uri).to_s
+  end 
 
-		signed_uri = uri
-		cropped_progs_base_uri = 'https://s3.amazonaws.com/programs-cropped.nypl.org'
-		if uri.match /#{Regexp.escape(cropped_progs_base_uri)}/
+  def thumb_uri
+    m = uri.match /\/([^\/]+\.jpg)$/
+    filename = m[1]
+    uri.sub /#{Regexp.escape(filename)}/, "thumbs/#{filename}"
+    self.class.sign_uri(uri).to_s
+  end 
 
-			s3_path = uri.match(/#{Regexp.escape(cropped_progs_base_uri)}\/(.+)/)[1]
+  def self.sign_uri(uri)
+    signed_uri = uri 
+    m = uri.match /s3\.amazonaws\.com\/([^\/]+)/
+		# PB: Let's not do signed uris. Just make them public 
+    unless true or m.nil?
+      bucket = m[1]
 
-			s3 = AWS::S3.new(
-				:access_key_id => ENV['AWS_ACCESS_KEY'],
-				:secret_access_key => ENV['AWS_SECRET_KEY']
-			)
-			bucket = s3.buckets['programs-cropped.nypl.org']
-			object = bucket.objects[s3_path]
-			signed_uri = object.url_for(:read, :force_path_style=>false)
-			logger.debug "Getting s3 path for #{s3_path}: #{object.key} => #{signed_uri}"
+      s3_path = uri.match(/#{Regexp.escape(bucket)}\/(.+)/)[1]
 
-			# signed_url = bucket_gen.get(URI.unescape(URI.parse(URI.escape(path)).path[1..-1]), 24.hour)
-		end
-		signed_uri
-	end
+      s3 = AWS::S3.new(
+        :access_key_id => ENV['AWS_ACCESS_KEY'],
+        :secret_access_key => ENV['AWS_SECRET_KEY']
+      )   
+      bucket = s3.buckets[bucket]
+      object = bucket.objects[s3_path]
+      signed_uri = object.url_for(:read, :force_path_style=>false)
 
-	def thumb_uri
-		uri.sub(/\/programs-cropped.nypl.org/, '/programs-cropped.nypl.org/thumbs')
-	end
-  
-  # keeping this for if we need a random asset
-  def self.random_for_transcription
-    Asset.random(:limit => 1).first
-  end
-  
-  
+    end 
+    signed_uri
+
+  end 
+   
   def self.classification_limit
     5
   end
@@ -90,9 +89,8 @@ class Asset
 			:width => width, 
 			:height => height, 
 			:hocr_blocks =>[], # hocr_blocks, 
-			:uri => signed_uri.to_s,
-			:thumb_uri => thumb_uri,
-			:fladeedle => 'doo'
+			:uri => signed_uri,
+			:thumb_uri => thumb_uri
 		}
 	end
   

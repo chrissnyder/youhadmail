@@ -12,5 +12,12 @@
     <a href="/about" class="secondary">About</a>
   </div>
 
-  <%= link_to 'Start Transcribing', asset_collections_path, :id => 'start-transcribing' %>
+  <% if params[:action] == 'welcome' %>
+    <%= link_to 'Start Transcribing', asset_collections_path, :id => 'start-transcribing' %>
+  <% else %>
+    <div class="logos">
+      <img src="/assets/images/logos/zooniverse.png"></img>
+      <img src="/assets/images/logos/nypl.png"></img>
+    </div>
+  <% end %>
 </div>
