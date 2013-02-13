@@ -115,7 +115,7 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 
 		:name => "Dates",
 		:description => "Any dates you can find on the letter",
-		:category => "Date & Location",
+		:category => "Dates & Locations",
 		:help => "We are looking for dates the letter was sent or  recived ",
 		:examples => [],
 		:multiple => true,
@@ -160,7 +160,7 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 
 		:name => "Locations",
 		:description => "Where was this letter address to or from? Or any other location you can find in the document.",
-		:category => "Date & Location",
+		:category => "Dates & Locations",
 		:help => "This can be on the top of the letter or on the envelope.",
 		:extended_help => "",
 		:examples => "",
@@ -196,13 +196,18 @@ task :you_had_mail_bootstrap => :environment do
 		:vocab => 'suggest-common',
 		:options => { :text => { :max_length => 50, :min_length => 0 } }
 	)
-
 	entity.fields << Field.new( 
-		:name => "Free entry",
-		:field_key => "freeform",
+		:name => "Country",
+		:field_key => "country",
 		:kind => "text",
 		:vocab => 'suggest-common',
 		:options => { :text => { :max_length => 200, :min_length => 0 } }
+	)
+	entity.fields << Field.new( 
+		:name => "Type",
+		:field_key => "type",
+		:kind => "select",
+		:options => { :select => ['From','To','Mentioned'] }
 	)
   template.entities << entity
   

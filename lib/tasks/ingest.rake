@@ -64,24 +64,34 @@ namespace :ingest do
 				s3 = s3_client
 				bucket = s3.buckets['youhadmail.nypl.org']
 
-				local_file_path = "#{Rails.root}/tmp/out.jpg"
-				local_file = File.open(local_file_path,'wb') do |f|
-					f.puts bucket.objects["#{subdir}#{filename}"].read
-				end
+				# unless bucket.objects["#{subdir.sub(/-source/,'')}#{filename}"].exists?
+					local_file_path = "#{Rails.root}/tmp/out.jpg"
+					local_file = File.open(local_file_path,'wb') do |f|
+						f.puts bucket.objects["#{subdir}#{filename}"].read
+					end
 
-				i = Magick::ImageList.new(local_file_path).pop
+					i = Magick::ImageList.new(local_file_path).pop
 
-				if i.columns > 1000
-					puts "  Resizing #{subdir}#{filename}"
-					i.change_geometry!('1000x') do |cols, rows, img|
+					if i.columns > 1000
+						puts "  Resizing #{subdir}#{filename}"
+						i.change_geometry!('1000x') do |cols, rows, img|
+							img.resize!(cols, rows)
+						end 
+						i.write local_file_path
+					end
+
+					subdir = subdir.sub /-source/, ''
+					bucket.objects["#{subdir}#{filename}"].write(:file => local_file_path, :acl => :public_read)
+					puts "  Wrote #{local_file_path} => #{subdir}#{filename}"
+
+
+					s3_thumb_path = "#{subdir}thumbs/#{filename}"
+					i.change_geometry!('170x') do |cols, rows, img|
 						img.resize!(cols, rows)
 					end 
 					i.write local_file_path
-				end
-
-				subdir = subdir.sub /-source/, ''
-				bucket.objects["#{subdir}#{filename}"].write(:file => local_file_path, :acl => :public_read)
-				puts "  Wrote #{local_file_path} => #{subdir}#{filename}"
+					bucket.objects[s3_thumb_path].write(:file => local_file_path, :acl => :public_read)
+				# end
 
 				uri = asset[:uri].sub /-source/, ''
 				asset = Asset.find_or_create_by_uri uri
@@ -91,13 +101,6 @@ namespace :ingest do
 				asset.asset_collection = collection
 
 				asset.save
-
-				s3_thumb_path = "#{subdir}thumbs/#{filename}"
-				i.change_geometry!('170x') do |cols, rows, img|
-					img.resize!(cols, rows)
-				end 
-				i.write local_file_path
-				bucket.objects[s3_thumb_path].write(:file => local_file_path, :acl => :public_read)
 
 				order += 1
 			end
@@ -117,7 +120,7 @@ namespace :ingest do
 		# puts "files: #{p filenames}"
 
 		require 'csv'
-		csv = CSV.read('/Users/paulbeaudoin/projects/zoonihack/assets/tilden-general/TildenGrouperTest - Sheet1.csv')
+		csv = CSV.read('/Users/paulbeaudoin/projects/zoonihack/assets/tilden-general/TildenGrouperTest.csv')
 
 		colls = []
 
