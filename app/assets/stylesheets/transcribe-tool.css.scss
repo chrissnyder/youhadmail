@@ -180,6 +180,10 @@ body#transcriptions_controller {
 
 .transcribe-image-holder {
 	text-align: center;
+
+	div {
+		text-align: left;
+	}
 }
 
 .transcribe-image-holder img {
