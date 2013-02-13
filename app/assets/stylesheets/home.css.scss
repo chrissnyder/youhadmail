@@ -39,6 +39,12 @@ html, body{
 
 }
 
+
+#MetaDataViewer .mediaTypes .metaPane.pulse h3{
+	color : red;
+
+}
+
 #MetaDataViewer ul {
 	width: 100%;
 	min-height: 500px;
@@ -58,6 +64,22 @@ html, body{
 #MetaDataViewer ul li.active .metaContent{
 	display:block
 }
+	
+.metaContent .bio img{
+	width: 80px;
+	height: 80px; 
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 20px;
+}
+
+.metaContent .bio p {
+	width: 180px;
+	display: inline-block;
+	vertical-align: top;
+	margin-left: 20px
+}
+
 #MetaDataViewer ul h3{
 	text-align: right;
 	font-size: 11px;

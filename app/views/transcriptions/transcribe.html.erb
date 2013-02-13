@@ -93,6 +93,8 @@ App.prototype = {
 																	zoomBoxWidth					: 600,
 																	zoomBoxHeight					: 200,
 																	annotationBoxWidth		: 860,
+
+																	advanceToNextLineAfterAdd: false,
 																	
 																	userId								: this.user_id,
 
@@ -161,9 +163,10 @@ App.prototype = {
 	},
 
 
-	_annotationAdded						: function(ann) {
+	_annotationAdded						: function(ann,entity) {
 																this.playbill_view.addEntity(ann);
 																$('#done-button').attr('disabled',false);
+																metaViewer.dealWithAnnotation(ann,entity);
 	},
 	
 	_annotationUpdated					: function(ann) {
@@ -187,7 +190,7 @@ $(document).ready(function(){
 
 	metaViewer = new MetaDataViewer("#MetaDataViewer")
 	metaViewer.render()
-	
+
 });
 
 </script>

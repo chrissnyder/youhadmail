@@ -115,7 +115,9 @@ $.widget("ui.transcribe", {
 															}
 														}
 														return ret;
-	},
+	}
+
+	,
 
 	_modalMoveToLine				: function(steps) {
 														
@@ -330,7 +332,7 @@ $.widget("ui.transcribe", {
 																this.annotations[id].marker_element.hide();
 
 															if (this.options.onAnnotationAdded!=null){
-																this.options.onAnnotationAdded.call(this, this.annotations[id]);
+																this.options.onAnnotationAdded.call(this, this.annotations[id], this._entityById(this.annotations[id].entityId));
 															}
 														}
 	},
@@ -1324,7 +1326,7 @@ $.widget("ui.transcribe", {
 															this.annotations[annotation_data.id].marker_element = this._generateMarker(annotation_data, location);
 															
 													  	if (this.options.onAnnotationAdded!=null){
-														 		this.options.onAnnotationAdded.call(this, annotation_data);
+														 		this.options.onAnnotationAdded.call(this, annotation_data,this._entityById(annotation_data.entity_id));
 															}
 														}
 
