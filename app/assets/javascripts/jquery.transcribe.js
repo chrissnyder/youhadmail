@@ -260,7 +260,7 @@ $.widget("ui.transcribe", {
 
 															var help = $('<div class="transcribe-full-help"></div>');
 															if(entity.help || entity.extended_help)
-																help.html('<p>' + (entity.extended_help ? entity.extended_help : entity.help).replace(/\n/, '</p><p>') + '</p>');
+																help.html('<p>' + (entity.extended_help ? entity.extended_help : entity.help).replace(/\n/g, '</p><p>') + '</p>');
 															if(entity.examples) {
 																var examples = $('<ul></ul>');
 																for(var i=0;i<entity.examples.length;i++) {
@@ -691,7 +691,7 @@ $.widget("ui.transcribe", {
 
 
 	_modalSelectEntityCategory	: function(catName) {
-															var catId = 'category-' + catName.replace(/ /,'_').toLowerCase();
+															var catId = 'category-' + catName.replace(/[^a-z]/g,'_').toLowerCase();
 															console.log("name: " + catId);
 
 															// ensure submenus are exactly same height as cat menu
@@ -1132,7 +1132,7 @@ $.widget("ui.transcribe", {
 														for(var i=0;i<this.options.template.entities.length;i++) {
 															var entity = this.options.template.entities[i];
 															var catName = entity.category;
-															var catId = 'category-' + catName.replace(/ /,'_').toLowerCase();
+															var catId = 'category-' + catName.replace(/[^a-z]/g,'_').toLowerCase();
 															if($(categoryChoices.find('#' + catId)).length == 0) {
 																categoryChoices.append(
 																	$('<li id="' + catId + '">' + catName + '</li>')
