@@ -7,6 +7,10 @@
 
   Filter accepts params in either key/value or an object. You can chain 
   the filter method.
+
+  Note: Filters are applied by logical AND.
+
+  Top-level keys: ["To", "From", "Dates", "Subject", "Locations", "Summary"]
 ###
 
 class Searcher
@@ -24,21 +28,28 @@ class Searcher
       obj = {}
       obj[params[0]] = params[1]
       @filters.push obj
-    else
+    else if params.length is 1
       # params is object
       console.log params
       for key, value of params[0]
         obj = {}
         obj[key] = value
         @filters.push obj
+    else
+      # Invalid params.
+      throw new RangeError('Must supply a filter.')
 
-      console.log @filters
     return @
 
   go: (cb) =>
     # Buildup URI
-    url = 'filters'
+    if @filters.length is 0
+      throw new RangeError('Must apply a filter.')
+      return @
+
+    url = ''
     for filter in @filters
+      url += 'filters'
       for key, value of filter # only "loops" once.
         keys = key.split ':'
         for key in keys
@@ -51,12 +62,3 @@ class Searcher
       cb result
 
 window.Searcher = Searcher
-
-s = new Searcher
-s.filter
-  'Locations:city': 'chicago'
-  'Locations:provence': 'IL'
-
-s.go (data) ->
-  console.log data
-
