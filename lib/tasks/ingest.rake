@@ -11,7 +11,7 @@ namespace :ingest do
 	end
 
 	task :ingest, [:name, :start, :limit, :template]  => :environment do |t, args|
-		args.with_defaults(:start => 0, :limit => 1,:template=>"You Had Mail Template")
+		args.with_defaults(:start => 0, :limit => 1, :template=>"You Had Mail Template")
 
 		# puts "getting #{args.name}, from methods: #{self.class.methods}"
 
@@ -69,7 +69,7 @@ namespace :ingest do
 				# if deriv exists, skip resize
 				deriv_path = "#{subdir.sub(/-source/,'')}#{filename}"
 				if bucket.objects[deriv_path].exists?
-					puts "    Deriv exists in s3, skipping resizes"
+					puts "    Deriv exists in s3, primary deriv resize"
 					local_path = self.localize_s3_asset deriv_path
 					i = Magick::ImageList.new(local_path).pop
 
@@ -92,17 +92,25 @@ namespace :ingest do
 					# Upload deriv
 					subdir = subdir.sub /-source/, ''
 					bucket.objects["#{subdir}#{filename}"].write(:file => local_file_path, :acl => :public_read)
-					puts "      Wrote #{local_file_path} => #{subdir}#{filename}"
+					puts "      Uploaded #{subdir}#{filename}"
 
+				end
 
+				# Consider (re)building thumb
+				regenerate_thumbs = true
+				s3_thumb_path = "#{subdir.sub /-source/,''}thumbs/#{filename}"
+				if ! bucket.objects[s3_thumb_path].exists? or regenerate_thumbs
+					local_file_path = "#{Rails.root}/tmp/out.jpg"
+
+					thumb = i.clone
 					# Generate thumb
-					s3_thumb_path = "#{subdir}thumbs/#{filename}"
-					i.change_geometry!('170x') do |cols, rows, img|
+					thumb.change_geometry!('150x') do |cols, rows, img|
 						img.resize!(cols, rows)
 					end 
-					i.write local_file_path
+					thumb.write local_file_path
 					# Upload thumb
 					bucket.objects[s3_thumb_path].write(:file => local_file_path, :acl => :public_read)
+					puts "    Uploading new thumb: #{s3_thumb_path}"
 				end
 
 				# Update Asset record
