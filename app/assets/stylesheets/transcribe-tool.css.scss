@@ -33,7 +33,8 @@ body#transcriptions_controller {
 /* Transcribe Area */
 
 .rightBar{
-	display: inline-block
+	display: inline-block;
+	
 }
 
 #transcription-area {
@@ -180,7 +181,7 @@ body#transcriptions_controller {
 
 .transcribe-image-holder {
 	position:absolute;
-	right:0;
+	left: 120px; 	
 	top:0;
 }
 

@@ -1,7 +1,8 @@
 development: &global_settings
-  host: 127.0.0.1
-  database: transcribe-dev
-  port: 27017
+  uri: <%= ENV['MONGO_URI'] %>
+  # host: 127.0.0.1
+  # database: transcribe-dev
+  # port: 27017
 
 test:
   database: transcribe-test

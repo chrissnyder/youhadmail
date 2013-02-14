@@ -12,17 +12,23 @@
 }
 
 ul.transcribe-page-nav {
-	display: none;
+
 	position:absolute;
-	left:0;
+	
 	top:0;
 	list-style: none;
 	height:600px;
 	overflow:auto;
+
+	width: 170px;
+	height: 969px;
+	right: -166px;
+	
 }
 
 ul.transcribe-page-nav li {
 	line-height:1px;
+	cursor:pointer;
 }
 
 ul.transcribe-page-nav li img, .transcribe-image-holder img, .ui-dialog {
