@@ -554,11 +554,10 @@ div.transcribe-form-help a {
 }
 
 #transcriptions-viewer {
-	display:block;
+	@include box-shadow(3px, 4px, #3c3c3c);
+	display: block;
 	width: 100%;
 	z-index: 99;
-	@include box-shadow(3px, 4px, #3c3c3c);
-	@include rounded-corners(5px);
 }
 
 #transcriptions-viewer h3 {
@@ -572,47 +571,52 @@ div.transcribe-form-help a {
 
 	margin-bottom: 5px;
 	font-size: 14px;
-	overflow: hidden;
-	overflow:auto;
+	overflow-x: hidden;
+	overflow-y:auto;
 	display:none;
 	max-height: 270px;
 
+	span {
+		cursor: pointer;
+	}
 }
 
-.completed-playbill h1 {
-	font-size:20px;
-	color:#777;
-}
 
 .completed-playbill ul {
-	list-style:none;
+	list-style: none;
 }
 
 .completed-playbill li {
-	height: 20px;
+	box-sizing: border-box;
+	color: #777;
+	padding: 5px 15px;
 	width: 100%;
-	padding: 35px;
 	margin:none;
 	border-bottom: 1px solid #C2C2C2;
 	border-top: 1px solid #DFDFDF;
+
+	&:first-child {
+		border-top: none;
+	}
 }
 
 .completed-playbill li .entity-label {
+	display: inline-block;
 	font-weight:bold;
 	font-style:italic;
 	padding: 0px;
 	margin: 0px;
 	font-size: 14px;
 	color: #8a8a8a;
+	width: 85px;
 }
 
 .completed-playbill li .placeholder {
-	-color:#777;
-	color:#b55;
-	margin-left: 45px;
-	font-size: 20px;
 	color: #151515;
+	display: none;
+	font-size: 20px;
 	font-weight: 200;
+	margin-left: 45px;
 }
 
 .completed-playbill li ul {
