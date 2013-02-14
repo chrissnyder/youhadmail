@@ -44,8 +44,9 @@ class Asset
   def thumb_uri
     m = uri.match /\/([^\/]+\.jpg)$/
     filename = m[1]
-    uri.sub /#{Regexp.escape(filename)}/, "thumbs/#{filename}"
-    self.class.sign_uri(uri).to_s
+    thumb_uri = uri.sub /#{Regexp.escape(filename)}/, "thumbs/#{filename}"
+
+    self.class.sign_uri(thumb_uri).to_s
   end 
 
   def self.sign_uri(uri)
@@ -66,6 +67,7 @@ class Asset
       signed_uri = object.url_for(:read, :force_path_style=>false)
 
     end 
+		puts "returning #{signed_uri}"
     signed_uri
 
   end 
