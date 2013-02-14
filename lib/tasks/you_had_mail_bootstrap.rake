@@ -21,12 +21,18 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 
 		:name => "To",
 		:description => "Who is this letter to?",
-		:category => "Essential",
+		:category => "Person",
 		:help => 'This is usually found after the word "Dear" in the letter near the top.',
 		:extended_help => '',
 		:examples => ["Herschel"],
 		:multiple => false,
 		:order => entity_count+=1
+	)
+  entity.fields << Field.new( 
+		:name => "Title",
+		:field_key => "title",
+		:kind => "text",
+		:options => { :text => { :max_length => 120, :min_length => 0 } }
 	)
   entity.fields << Field.new( 
 		:name => "First Name",
@@ -47,11 +53,17 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 
 		:name => "From",
 		:description => "Who is this letter from?",
-		:category => "Essential",
+		:category => "Person",
 		:help => "Who is this letter from.",
 		:examples => ["Herschel"],
 		:multiple => false,
 		:order => entity_count+=1
+	)
+  entity.fields << Field.new( 
+		:name => "Title",
+		:field_key => "title",
+		:kind => "text",
+		:options => { :text => { :max_length => 120, :min_length => 0 } }
 	)
 	entity.fields << Field.new( 
 		:name => "First Name",
@@ -66,11 +78,44 @@ task :you_had_mail_bootstrap => :environment do
 		:options => { :text => { :max_length => 120, :min_length => 0 }})
   template.entities << entity
 
+	# Mentioned
+  entity = Entity.create( 
+		:name => "Mentioned",
+		:description => "Someone mentioned in the letter",
+		:category => "Person",
+		:help => 'This is a person mentioned in the letter other than the sender and the recipient',
+		:extended_help => '',
+		:examples => ["Herschel"],
+		:multiple => false,
+		:order => entity_count+=1
+	)
+  entity.fields << Field.new( 
+		:name => "Title",
+		:field_key => "title",
+		:kind => "text",
+		:options => { :text => { :max_length => 120, :min_length => 0 } }
+	)
+  entity.fields << Field.new( 
+		:name => "First Name",
+		:field_key => "first_name",
+		:kind => "text",
+		:vocab => 'suggest-common',
+		:options => { :text => { :max_length => 120, :min_length => 0 } }
+	)
+  entity.fields << Field.new( 
+		:name => "Last Name",
+		:field_key => "last_name",
+		:kind => "text",
+		:options => { :text => { :max_length => 120, :min_length => 0 } }
+	)
+  template.entities << entity
+
+
 	# Dates 
   entity = Entity.create( 
 		:name => "Dates",
 		:description => "Any dates you can find on the letter",
-		:category => "Desirable",
+		:category => "Dates & Locations",
 		:help => "We are looking for dates the letter was sent or  recived ",
 		:examples => [],
 		:multiple => true,
@@ -95,7 +140,7 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 	
 		:name => "Subject",
 		:description => "The subject of the letter",
-		:category => "Desirable",
+		:category => "Content",
 		:help => "Is there a subject or can you give a general subject for the letter",
 		:extended_help => "The address is typically in the head of the first page. If all that's given is an intersection, go ahead and enter that; We'll do the data scrubbing later.",
 		:examples => ["The need for laws", "My favourite ponies"],
@@ -115,7 +160,7 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 
 		:name => "Locations",
 		:description => "Where was this letter address to or from? Or any other location you can find in the document.",
-		:category => "Desirable",
+		:category => "Dates & Locations",
 		:help => "This can be on the top of the letter or on the envelope.",
 		:extended_help => "",
 		:examples => "",
@@ -151,13 +196,18 @@ task :you_had_mail_bootstrap => :environment do
 		:vocab => 'suggest-common',
 		:options => { :text => { :max_length => 50, :min_length => 0 } }
 	)
-
 	entity.fields << Field.new( 
-		:name => "Free entry",
-		:field_key => "freeform",
+		:name => "Country",
+		:field_key => "country",
 		:kind => "text",
 		:vocab => 'suggest-common',
 		:options => { :text => { :max_length => 200, :min_length => 0 } }
+	)
+	entity.fields << Field.new( 
+		:name => "Type",
+		:field_key => "type",
+		:kind => "select",
+		:options => { :select => ['From','To','Mentioned'] }
 	)
   template.entities << entity
   
@@ -165,7 +215,7 @@ task :you_had_mail_bootstrap => :environment do
   entity = Entity.create( 
 		:name => "Summary",
 		:description => "A summary of the letter",
-		:category => "Extras",
+		:category => "Content",
 		:help => "Give a breif summary of the letter",
 		:extended_help => "This is a very subjective thing",
 		:examples => ["This is a letter about the benefits of whisky."],
@@ -184,6 +234,7 @@ task :you_had_mail_bootstrap => :environment do
 	
 template.save 
 
+=begin
 begin
   #generate a single asset and a single user for testing just now
   playbill = AssetCollection.create(:title => "Test Letter", :author => "", :extern_ref => "http://google.com", :template => template)
@@ -193,7 +244,6 @@ begin
   Asset.create(:uri => "/example_assets/AlvanClark_X7_1_3.jpg", :display_width => 1275, :height => 1650, :width => 1275, :asset_collection => playbill, :order => 2)
 end
 
-=begin
  	public/images/00024.jpg JPEG 1000x1497 1000x1497+0+0 8-bit PseudoClass 256c 556KB 0.000u 0:00.000
 	public/images/00025.1.jpg[1] JPEG 1000x1534 1000x1534+0+0 8-bit PseudoClass 256c 523KB 0.000u 0:00.000
 	public/images/00025.2.jpg[2] JPEG 1000x1534 1000x1534+0+0 8-bit PseudoClass 256c 581KB 0.000u 0:00.000

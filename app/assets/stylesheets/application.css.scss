@@ -23,11 +23,18 @@ $success-color: green;
 }
 
 @mixin box-shadow($dist, $blur, $color) {
-	-moz-box-shadow: $dist, $dist, $blur, $color;
-	-webkit-box-shadow: $dist, $dist, $blur, $color;
-	box-shadow: $dist, $dist, $blur, $color;
+	-moz-box-shadow: $dist $dist $blur $color;
+	-webkit-box-shadow: $dist $dist $blur $color;
+	box-shadow: $dist $dist $blur $color;
 }
 
+@mixin clearfix() {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
 
 @import "fonts.css";
 @import "reset.css";

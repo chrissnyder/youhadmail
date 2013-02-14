@@ -2,7 +2,7 @@ $.widget("ui.transcribe", {
 
 	options									: {	
 		annotationBoxWidth  							: 500,
-		annotationBoxHeight 							: 400,
+		annotationBoxHeight 							: 280,
 		zoomLevel					 								: 1,
 
 		zoomBoxWidth											: 500,
@@ -262,7 +262,7 @@ $.widget("ui.transcribe", {
 
 															var help = $('<div class="transcribe-full-help"></div>');
 															if(entity.help || entity.extended_help)
-																help.html('<p>' + (entity.extended_help ? entity.extended_help : entity.help).replace(/\n/, '</p><p>') + '</p>');
+																help.html('<p>' + (entity.extended_help ? entity.extended_help : entity.help).replace(/\n/g, '</p><p>') + '</p>');
 															if(entity.examples) {
 																var examples = $('<ul></ul>');
 																for(var i=0;i<entity.examples.length;i++) {
@@ -693,11 +693,7 @@ $.widget("ui.transcribe", {
 
 
 	_modalSelectEntityCategory	: function(catName) {
-															var catId = 'category-' + catName.replace(/ /,'_').toLowerCase();
-															console.log("name: " + catId);
-
-															// ensure submenus are exactly same height as cat menu
-															$('.entity-submenus ul').css('height', $('.entity-categories').innerHeight());
+															var catId = 'category-' + catName.replace(/[^a-z]/g,'_').toLowerCase();
 
 															if($('.entity-categories li.selected').attr('id') == catId) return;
 															$('.entity-submenu li').removeClass('selected');
@@ -707,8 +703,11 @@ $.widget("ui.transcribe", {
 
 															this.element.find('.entity-submenu').removeClass('selected');
 															this.element.find('#entity-submenu-' + catId).addClass('selected');
-															console.log('li: ' + '#entity-submenu-' + catId + ': ', this.element.find('#entity-submenu-' + catId));
 
+															menuItems = this.element.find('#entity-submenu-' + catId + ' li').length
+															this.element.find('#entity-submenu-' + catId + ' li').css({
+																width: (100 / menuItems) + '%'
+															});
 															this.element.find('#entity-submenu-' + catId + ' li:first-child').trigger('click');
 	},
 
@@ -783,36 +782,41 @@ $.widget("ui.transcribe", {
 														this.transcribeModal.find('ul.entity-types').show();
 															
 														$('.transcribe-modal-containment').show();
-														// $('.transcribe-modal').draggable( "option", "containment", "#" );
 
-														var doc_height = $(document).height();
 														$('.darkening-overlay').show()
-															.css('height',doc_height)
+															.css('height', $(document).height());
 
 														this._imageAreaSelector().setOptions({disabled: true});
-														// this.assets[this.assetIndex].element.imgAreaSelect({disable:true});
 
-														if(position){
-															if(position.width && position.height){
+														if (position) {
+															if (position.width && position.height) {
 																var zoomLevel = this.options.zoomLevel;
 
 																this.options.zoomBoxWidth = position.width * zoomLevel;
-																// this.options.zoomBoxHeight = position.height * zoomLevel;
 																this.options.zoomBoxHeight = Math.min(position.height * zoomLevel, parseInt(this.element.find('#transcribe-zoom-box-holder').css('max-height')));
 																
 																this.transcribeModal.zoomBox
 																	.setSize( position.width * zoomLevel, position.height * zoomLevel);
 
 																this.transcribeModal.zoomBox
-																	.css("left",this.options.annotationBoxWidth/2.0-this.options.zoomBoxWidth/2.0);
+																	.css({
+																		left: $(this.transcribeModal).width() / 4 - $(this.transcribeModal.zoomBox).width() / 2,
+																		top: $(this.transcribeModal).height() / 2
+																	});
+
+																$(this.transcribeModal).find('#transcribe-form-help').css({
+																	width: $(this.transcribeModal).width() / 2
+																});
+
+																menuItems = $('.entity-categories li').length
+																$('.entity-categories li').css({
+																	width: (100 / menuItems) + '%'
+																});
 																
 															}
 															var xOffset = $(this.transcribeModal).width()/2.0;
 															var yOffset = $(this.transcribeModal).height()+($(this.transcribeModal.zoomBox).height())/2.0;
-															// var screenX = position.x-xOffset;
-															// this.transcribeModal.css("top",position.y-yOffset);
-															this.transcribeModal.center();
-															// this.transcribeModal.css("position","absolute");
+
 															var zoomX = -1*(position.x*this.options.zoomLevel-this.options.zoomBoxWidth/2.0);
 															var zoomY = -1*(position.y*this.options.zoomLevel-this.options.zoomBoxHeight/2.0);
 															
@@ -821,6 +825,12 @@ $.widget("ui.transcribe", {
 																height: this.options.annotationBoxHeight + this.options.zoomBoxHeight
 															});
 															$(".transcribe-form-top-bar").css("padding-top", this.options.zoomBoxHeight + 80);
+
+															// Center the modal
+															$(this.transcribeModal).css({
+																left: $(document).width() / 2 - $(this.transcribeModal).width() / 2,
+																top: 50
+															});
 
 															$(this.transcribeModal.zoomBox).find("#transcribe-zoom-box-image-holder").css({
 																top: zoomY,
@@ -1131,14 +1141,13 @@ $.widget("ui.transcribe", {
 
 														var categoryChoices = $('<ul class="entity-categories"></ul>');
 														var entitySubmenus = $('<div class="entity-submenus"></div>');
-														for(var i=0;i<this.options.template.entities.length;i++) {
+														for (var i = 0; i < this.options.template.entities.length; i++) {
 															var entity = this.options.template.entities[i];
 															var catName = entity.category;
-															var catId = 'category-' + catName.replace(/ /,'_').toLowerCase();
+															var catId = 'category-' + catName.replace(/[^a-z]/g,'_').toLowerCase();
 															if($(categoryChoices.find('#' + catId)).length == 0) {
 																categoryChoices.append(
 																	$('<li id="' + catId + '">' + catName + '</li>')
-																		.css('background-image','url(/assets/' + catId + '.png)')
 																		.click(this._modalSelectEntityCategory.bind(this, catName))
 																);
 																entitySubmenus.append($('<ul class="entity-submenu" id="entity-submenu-' + catId + '"></>'));
@@ -1154,7 +1163,7 @@ $.widget("ui.transcribe", {
 														form.append(entitySubmenus);
 
 														var saveBar = $('<div class="save-button-bar"></div>').css('display','none');
-														saveBar.append($("<input type='submit' value='save'>").addClass("save-button").click(function(e){ self._addAnnotation(e) } ));
+														saveBar.append($("<input type='submit' value='Submit'>").addClass("save-button").click(function(e){ self._addAnnotation(e) } ));
 														saveBar.append(
 															$('<span class="transcribe-form-next-after-add" id="transcribe-form-next-after-add"></span>')
 																.append(
@@ -1218,9 +1227,7 @@ $.widget("ui.transcribe", {
 																												.css('top',0)
 																												.css('left',0);
 
-														var zoomBoxHolder = $('<div id="transcribe-zoom-box-holder"><div id="transcribe-zoom-box"></div></div>')
-															.css("top", 40)
-															.css("left",this.options.annotationBoxWidth/2.0-this.options.zoomBoxWidth/2.0);
+														var zoomBoxHolder = $('<div id="transcribe-zoom-box-holder"><div id="transcribe-zoom-box"></div></div>');
 
 														zoomBoxHolder.setSize = (function(w, h) {
 															var elems = [this, this.find('#transcribe-zoom-box')];

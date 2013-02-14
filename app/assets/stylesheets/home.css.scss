@@ -1,36 +1,81 @@
+$containerWidth: 1000px;
+$orange: #bd3500;
+
+@mixin box-shadow($shadow...) {
+  -moz-box-shadow: $shadow;
+  -webkit-box-shadow: $shadow;
+  box-shadow: $shadow;
+}
+
 html, body{
 	width: 100%;
 	height: 100%;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
-#header{
-	position:fixed ;
+
+#header {
+	background: #151515;
+	border-top: 1px solid #3c3c3c;
+	box-sizing: border-box;
 	bottom: 0px;
+	color: #fff;
+	height: 67px;
 	left: 0px;
-	background-color: black;
-	color: white;
-	height: 18px;
 	padding: 25px;
+	position: fixed;
 	width: 100%;
+	z-index: 1000;
+
+	&:before {
+		border-top: 1px solid #000;
+		content: '';
+		height: 0px;
+		left: 0;
+		position: absolute;
+		top: -2px;
+		width: 100%;
+	}
+
+	h1 {
+		font-family: Georgia, serif;
+		font-size: 32px;
+		text-shadow: 1px 1px 5px #000;
+	}
+
+	a {
+		color: #fff;
+		text-decoration: none;
+	}
+
+	.logos {
+		position: absolute;
+		right: 5px;
+		top: 11px;
+
+		img {
+			margin: 0 15px;
+			vertical-align: middle;
+		}
+	}
 }
 
-#header .content-container{
-	width: 1200px
-}
-
-#header h1 {
-	font-size:32px;
-
-}
-
-
-.leftBar{
-	width: 355px ;
-	height: 100%;
+.leftBar {
 	background-image: url(/assets/dark-grey.jpg); 
 	background-repeat: repeat;
 	display: inline-block;
+	height: 100%;
+	overflow-y: scroll;
 	vertical-align: top;
+	width: 355px;
+}
+
+.rightBar {
+	border-left: 1px solid #c2c2c2;
+	height: 100%;
+	overflow-y: scroll;
+	position: absolute;
+	top: 0;
+	left: 355px;
 }
 /* nav */
 
@@ -41,157 +86,257 @@ html, body{
 
 
 #MetaDataViewer .mediaTypes .metaPane.pulse h3{
-	color : red;
+  color : red;
 
 }
 
 #MetaDataViewer ul {
-	width: 100%;
-	min-height: 500px;
+  width: 100%;
+  min-height: 500px;
 }
 
 #MetaDataViewer ul li {
-	// box-shadow: 1px 0px 0px 15px rgba(0,0,0,0.15);
+  // box-shadow: 1px 0px 0px 15px rgba(0,0,0,0.15);
 
-	border-top: 1px solid white ;
+  border-top: 1px solid white ;
 }
 
+#MetaDataViewer ul li:not(.active) h3 {
+  background: rgb(238,238,238); /* Old browsers */
+  background: -moz-linear-gradient(top,  rgba(238,238,238,1) 0%, rgba(238,238,238,1) 50%, rgba(224,224,224,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(50%,rgba(238,238,238,1)), color-stop(100%,rgba(224,224,224,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(238,238,238,1) 0%,rgba(238,238,238,1) 50%,rgba(224,224,224,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
+}
 
 #MetaDataViewer ul li .metaContent{
-	display:none;
+  display:none;
 }
 
 #MetaDataViewer ul li.active .metaContent{
-	display:block
+  display:block
 }
-	
+  
 .metaContent .bio img{
-	width: 80px;
-	height: 80px; 
-	display: inline-block;
-	vertical-align: top;
-	margin-left: 20px;
+  width: 80px;
+  height: 80px; 
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
 }
 
 .metaContent .bio p {
-	width: 180px;
-	display: inline-block;
-	vertical-align: top;
-	margin-left: 20px
+  width: 180px;
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 20px
 }
 
 #MetaDataViewer ul h3{
-	text-align: right;
-	font-size: 11px;
-	color: #424242;
-	padding: 10px;
-	background-color: #EEEEEE;
-	cursor:pointer;
+  text-align: right;
+  font-size: 11px;
+  color: #424242;
+  padding: 10px;
+  background-color: #EEEEEE;
+  cursor:pointer;
 }
 
 
 #top-nav {
-	overflow:hidden;
+  overflow:hidden;
 }
 
 #top-nav a {
-	display:block;
-	width:100px;
-	font-size:20px;
-	text-decoration:none;
-	color:white;
-	font-family:Georgia,serif;
+  display:block;
+  width:100px;
+  font-size:20px;
+  text-decoration:none;
+  color:white;
+  font-family:Georgia,serif;
 }
 
 #top-nav a.primary {
-	float:left;
+  float:left;
 }
 
 #top-nav a.secondary {
-	float:right;
-	text-align:right;
+  float:right;
+  text-align:right;
 }
 
 #top-nav a.active, #top-nav a:hover {
-	color:#993300;
+  color:#993300;
 }
 
 hr {
-	background-color:#000;
-	height:3px;
+  background-color:#000;
+  height:3px;
 }
 
 
 /* copy-heavy pages */
 .copy-content p {
-	font-size: 15px;
-	line-height:1.6em;
-	padding-bottom:1.8em;
-	max-width:500px;
+  font-size: 15px;
+  line-height:1.6em;
+  padding-bottom:1.8em;
+  max-width:500px;
 }
 
 h2 {
-	font-size:22px;
-	color:#333;
-	padding:1em 0;
+  font-size:22px;
+  color:#333;
+  padding:1em 0;
 }
 
 
 /* playbill list */
 
 .collection-list {
-	list-style:none;
-	margin:0;
+  list-style:none;
+  margin:0;
 }
 
 .collection-list li {
-	width:176px; /* accomodate drop-shadow on img */
-	overflow:hidden;
-	position:relative;
-	display:block;
-	float:left;
-	margin-bottom:20px;
-	margin-right:40px;
+  width:176px; /* accomodate drop-shadow on img */
+  overflow:hidden;
+  position:relative;
+  display:block;
+  float:left;
+  margin-bottom:20px;
+  margin-right:40px;
 }
 
 .playbill-meta {
-	text-align:center;
+  text-align:center;
 }
 
 .collection-list li img {
-	box-shadow:3px 3px 3px #777;
-	width :150px;
-	height: 194px;
+  @include box-shadow(3px 3px 3px #777);
+  width :150px;
+  height: 194px;
 }
 
 .transcribe-link {
-	z-index:1;
-	position:absolute;
-	top:50%;
-	left:50%;
-	opacity:0.6;
-	background-color:green;
-	text-align:center;
-	font-size:20px;
-	color:#fff;
-	text-decoration:none;
-	display:none;
+  z-index:1;
+  position:absolute;
+  top:50%;
+  left:50%;
+  opacity:0.6;
+  background-color:green;
+  text-align:center;
+  font-size:20px;
+  color:#fff;
+  text-decoration:none;
+  display:none;
 
-	width:100px;
-	height:100px;
-	line-height:100px;
-	margin-left:-50px;
-	margin-top:-50px;
-	border-radius:50px;
+  width:100px;
+  height:100px;
+  line-height:100px;
+  margin-left:-50px;
+  margin-top:-50px;
+  border-radius:50px;
 }
 
 .collection-list li:hover .transcribe-link {
-	display:block;
+  display:block;
 }
 
 
 .leaflet-control-attribution {
-	display:none;
+  display:none;
 }
 
+#home_controller.welcome {
+  background-image: image-url("dark-grey.jpg");
 
+  .container {
+    width: $containerWidth;
+    margin: 0 auto;
+  }
+
+  .welcome {
+    @include clearfix;
+    min-width: $containerWidth;
+    padding: 50px 0 83px 0;
+    background-image: image-url("light-grey.jpg");
+    border-top: 5px solid #151515;
+    border-bottom: 1px solid #bebebe;
+    font-size: 15px;
+    color: #151515;
+
+    span.logo {
+      display: block;
+      width: 204px;
+      height: 40px;
+      margin-bottom: 63px;
+      background-image: image-url("logo-top.png");
+      overflow: hidden;
+      text-indent: -9999px;
+    }
+
+    .tilden {
+      float: left;
+      margin-left: 84px;
+
+      img {
+        margin-bottom: 18px;
+        border: 4px solid #aeaeae;
+        @include rounded-corners(140px);
+      }
+
+      span.name {
+        display: block;
+        position: relative;
+        width: 130px;
+        height: 25px;
+        margin: 0 auto 15px auto;
+        background-color: #151515;
+        @include rounded-corners(3px);
+        line-height: 25px;
+        font-size: 11px;
+        font-weight: bold;
+        text-align: center;
+        color: #d3d3d3;
+
+        $arrowWidth: 6px;
+
+        &:after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          bottom: -1 * $arrowWidth;
+          width: 0;
+          margin-left: -1 * $arrowWidth;
+          border: $arrowWidth solid transparent;
+          border-bottom: 0;
+          border-top-color: #151515;
+        }
+      }
+    }
+
+    .summary {
+      float: left;
+      width: 645px;
+      margin-left: 87px;
+      text-shadow: 0 1px 0 #dfdfdf;
+    }
+
+    h1 {
+      margin: 20px 0 17px 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: $orange;
+    }
+
+    p {
+      line-height: 1.4;
+    }
+  }
+
+  .letters {
+    padding: 42px 0;
+  }
+}
