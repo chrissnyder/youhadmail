@@ -38,9 +38,9 @@ body#transcriptions_controller {
 }
 
 #transcription-area {
-	min-width:800px;
-	margin:20px auto;
 	@include box-shadow(3px, 4px, #000000);
+	min-width: 600px;
+	margin:20px auto;
 }
 
 #transcription-area span.loading {
@@ -180,16 +180,13 @@ body#transcriptions_controller {
 
 
 .transcribe-image-holder {
-
-	position:absolute;
-	left: 120px; 	
-	top:0;
-
+	left: 20px;
+	position: absolute;
+	top: 0;
 
 	div {
 		text-align: left;
 	}
-
 }
 
 .transcribe-image-holder img {
