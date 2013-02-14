@@ -1,19 +1,24 @@
+<%= render :partial => '/nav' %>
+
 <div class="welcome">
   <div class="container">
-    <span class="logo">Open Letters</span>
-
     <div class="tilden">
       <%= image_tag 'tilden-portrait.jpg', :size => '140x140', :alt => 'Samuel J. Tilden' %>
-      <span class="name">Samuel J. Tilden</span>
+      <h3>Current Collection:</h3>
+      <p>Samuel J. Tilden Letters</p>
     </div>
 
     <div class="summary">
       <h1>Help build a network of historical correspondence.</h1>
+
       <p>
-        Imagine if you could explore handwritten letters from the world's great archives with the ease
-        of modern email, tracking conversations across times, people and places? Here you can help
-        unlock old letters by transcribing key terms into a simple email-style template.
+        Imagine if you could explore handwritten letters from the world's great
+        archives as easily as searching your email inbox, tracking conversations
+        across times, people and places. Here you can help unlock old letters by
+        transcribing key terms into a simple email-style template.
       </p>
+
+      <%= link_to 'Start Transcribing', '#', :id => 'start-transcribing' %>
     </div>
   </div>
 </div>
@@ -21,4 +26,8 @@
 <div class="letters">
 </div>
 
-<%= render :partial => '/nav' %>
+<div id="credit" class="black-bar">
+  Open Letters is a collaboration between
+  <span class="nypl">New York Public Library Labs</span> and
+  <span class="zooniverse">the Zooniverse</span>.
+</div>

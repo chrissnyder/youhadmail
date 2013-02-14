@@ -13,55 +13,223 @@ html, body{
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-#header {
-	background: #151515;
-	border-top: 1px solid #3c3c3c;
-	box-sizing: border-box;
-	bottom: 0px;
-	color: #fff;
-	height: 67px;
-	left: 0px;
-	padding: 25px;
-	position: fixed;
-	width: 100%;
-	z-index: 1000;
+.container {
+  width: $containerWidth;
+  margin: 0 auto;
+}
 
-	&:before {
-		border-top: 1px solid #000;
-		content: '';
-		height: 0px;
-		left: 0;
-		position: absolute;
-		top: -2px;
-		width: 100%;
-	}
+.black-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-width: 500px;
+  height: 88px;
+  padding: 0;
+  background-color: #151515;
+  border-top: 1px solid #3c3c3c;
+  @include box-shadow(0 -1px 0 #151515);
+  color: #f2f2f2;
 
-	h1 {
-		font-family: Georgia, serif;
-		font-size: 32px;
-		text-shadow: 1px 1px 5px #000;
-	}
+  a.logo {
+    float: left;
+    width: 187px;
+    height: 17px;
+    margin-top: 33px;
+    overflow: hidden;
+    text-indent: -9999px;
+    background-image: image-url("logo-footer.png");
+  }
 
-	a {
-		color: #fff;
-		text-decoration: none;
-	}
+  ul#top-nav {
+    list-style: none;
+    float: right;
+    margin-top: 27px;
 
-	.logos {
-		position: absolute;
-		right: 5px;
-		top: 11px;
+    li {
+      float: left;
+    }
 
-		img {
-			margin: 0 15px;
-			vertical-align: middle;
-		}
-	}
+    a {
+      display: block;
+      padding: 0 12px;
+      margin: 0 6px;
+      line-height: 34px;
+      font-size: 13px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #f7f7f7;
+    }
+  }
+}
+
+#home_controller.welcome {
+  background-image: image-url("dark-grey.jpg");
+
+  #header {
+    position: relative;
+    min-width: $containerWidth;
+    background-color: #f3f3f3;
+    border-top: 5px solid #151515;
+    border-bottom: 1px solid #ddd;
+
+    a.logo {
+      display: block;
+      width: 204px;
+      height: 40px;
+      margin: 24px 0 0 0;
+      background-image: image-url("logo-top.png");
+      overflow: hidden;
+      text-indent: -9999px;
+    }
+
+    ul#top-nav {
+      a {
+        text-shadow: 0 1px 0 #dfdfdf;
+        color: $orange;
+
+        &:hover {
+          color: #151515;
+        }
+      }
+    }
+  }
+
+  .welcome {
+    min-width: $containerWidth;
+    background-image: image-url("light-grey.jpg");
+    border-bottom: 1px solid #bebebe;
+    color: #151515;
+
+    .container {
+      @include clearfix;
+      padding: 50px 0 0 0;
+    }
+
+    .tilden {
+      position: relative;
+      float: left;
+      margin-left: 84px;
+      padding-bottom: 15px;
+      text-align: center;
+
+      &:after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -10px;
+        width: 28px;
+        height: 10px;
+        background-image: image-url("tilden-arrow.png");
+        margin-left: -14px;
+      }
+
+      img {
+        margin-bottom: 9px;
+        border: 5px solid #aeaeae;
+        @include rounded-corners(140px);
+      }
+
+      h3 {
+        margin-bottom: 1px;
+        font-size: 16px;
+        color: $orange;
+      }
+
+      p {
+        font-size: 12px;
+      }
+    }
+
+    .summary {
+      float: left;
+      width: 620px;
+      margin-left: 105px;
+      text-shadow: 0 1px 0 #dfdfdf;
+    }
+
+    h1 {
+      margin: 20px 0 10px 0;
+      font-size: 24px;
+      font-weight: bold;
+      color: $orange;
+    }
+
+    p {
+      margin-bottom: 30px;
+      line-height: 1.4;
+      font-size: 15px;
+    }
+
+    a#start-transcribing {
+      float: left;
+      position: relative;
+      width: 200px;
+      height: 40px;
+      background-color: $orange;
+      @include box-shadow(0 2px 3px rgba(0,0,0,0.25));
+      border: 1px solid #581900;
+      @include rounded-corners(3px);
+      line-height: 40px;
+      font-size: 15px;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 0 1px 1px #6a1e00;
+      text-decoration: none;
+      color: #ececec;
+
+      &:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 1px;
+        width: 196px;
+        height: 3px;
+        border: 1px solid transparent;
+        border-top: 1px solid #f14400;
+        @include rounded-corners(2px);
+      }
+
+      &:hover {
+        background-color: lighten($orange, 3%);
+        color: #fff;
+      }
+    }
+  }
+
+  .letters {
+    padding: 42px 0;
+  }
+
+  #credit {
+    line-height: 88px;
+    font-size: 18px;
+    text-align: center;
+    color: #999;
+
+    span {
+      display: inline-block;
+      @include height-aligned(88px);
+      color: #bbb;
+    }
+
+    span.nypl {
+      margin-left: 8px;
+      padding-left: 53px;
+      background: image-url("nypl-logomark.png") left center no-repeat;
+    }
+
+    span.zooniverse {
+      margin-left: 8px;
+      padding-left: 50px;
+      background: image-url("zooniverse-logomark.png") left center no-repeat;
+    }
+  }
 }
 
 .leftBar {
   @include box-shadow(0 0 20px 0 #999);
-	background-image: url(/assets/dark-grey.jpg); 
+	background-image: url(/assets/dark-grey.jpg);
 	background-repeat: repeat;
 	display: inline-block;
 	height: 100%;
@@ -121,10 +289,10 @@ html, body{
 #MetaDataViewer ul li.active .metaContent{
   display:block
 }
-  
+
 .metaContent .bio img{
   width: 80px;
-  height: 80px; 
+  height: 80px;
   display: inline-block;
   vertical-align: top;
   margin-left: 20px;
@@ -146,38 +314,10 @@ html, body{
   cursor:pointer;
 }
 
-
-#top-nav {
-  overflow:hidden;
-}
-
-#top-nav a {
-  display:block;
-  width:100px;
-  font-size:20px;
-  text-decoration:none;
-  color:white;
-  font-family:Georgia,serif;
-}
-
-#top-nav a.primary {
-  float:left;
-}
-
-#top-nav a.secondary {
-  float:right;
-  text-align:right;
-}
-
-#top-nav a.active, #top-nav a:hover {
-  color:#993300;
-}
-
 hr {
   background-color:#000;
   height:3px;
 }
-
 
 .copy-content{
   max-width:700px;
@@ -252,7 +392,6 @@ h2 {
   display:none;
 }
 
-
 /* photo stacks */
 
 .photo-stack {
@@ -316,97 +455,4 @@ PB: Nah..
 	img.current {
 		@include rotate(0deg);
 	}
-}
-
-
-#home_controller.welcome {
-  background-image: image-url("dark-grey.jpg");
-
-  .container {
-    width: $containerWidth;
-    margin: 0 auto;
-  }
-
-  .welcome {
-    @include clearfix;
-    min-width: $containerWidth;
-    padding: 50px 0 83px 0;
-    background-image: image-url("light-grey.jpg");
-    border-top: 5px solid #151515;
-    border-bottom: 1px solid #bebebe;
-    font-size: 15px;
-    color: #151515;
-
-    span.logo {
-      display: block;
-      width: 204px;
-      height: 40px;
-      margin-bottom: 63px;
-      background-image: image-url("logo-top.png");
-      overflow: hidden;
-      text-indent: -9999px;
-    }
-
-    .tilden {
-      float: left;
-      margin-left: 84px;
-
-      img {
-        margin-bottom: 18px;
-        border: 4px solid #aeaeae;
-        @include rounded-corners(140px);
-      }
-
-      span.name {
-        display: block;
-        position: relative;
-        width: 130px;
-        height: 25px;
-        margin: 0 auto 15px auto;
-        background-color: #151515;
-        @include rounded-corners(3px);
-        line-height: 25px;
-        font-size: 11px;
-        font-weight: bold;
-        text-align: center;
-        color: #d3d3d3;
-
-        $arrowWidth: 6px;
-
-        &:after {
-          content: "";
-          position: absolute;
-          left: 50%;
-          bottom: -1 * $arrowWidth;
-          width: 0;
-          margin-left: -1 * $arrowWidth;
-          border: $arrowWidth solid transparent;
-          border-bottom: 0;
-          border-top-color: #151515;
-        }
-      }
-    }
-
-    .summary {
-      float: left;
-      width: 645px;
-      margin-left: 87px;
-      text-shadow: 0 1px 0 #dfdfdf;
-    }
-
-    h1 {
-      margin: 20px 0 17px 0;
-      font-size: 22px;
-      font-weight: bold;
-      color: $orange;
-    }
-
-    p {
-      line-height: 1.4;
-    }
-  }
-
-  .letters {
-    padding: 42px 0;
-  }
 }
