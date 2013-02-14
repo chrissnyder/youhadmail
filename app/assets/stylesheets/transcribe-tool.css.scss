@@ -180,7 +180,7 @@ body#transcriptions_controller {
 
 
 .transcribe-image-holder {
-	left: 20px;
+	left: 30px;
 	position: absolute;
 	top: 0;
 
@@ -191,7 +191,7 @@ body#transcriptions_controller {
 
 .transcribe-image-holder img {
 	display: none;
-	box-shadow: 0 0 15px 0 #777;
+	box-shadow: 0 0 13px 0 #999;
 	max-width: 90%;
 }
 
@@ -576,7 +576,7 @@ div.transcribe-form-help a {
 	display:none;
 	max-height: 270px;
 
-	span {
+	.value-holder {
 		cursor: pointer;
 	}
 }
@@ -589,7 +589,7 @@ div.transcribe-form-help a {
 .completed-playbill li {
 	box-sizing: border-box;
 	color: #777;
-	padding: 5px 15px;
+	padding: 10px 15px;
 	width: 100%;
 	margin:none;
 	border-bottom: 1px solid #C2C2C2;
@@ -662,18 +662,18 @@ div.transcribe-form-help a {
 }
 
 #save-instructions {
-	padding-top:40px;
+	padding-top: 40px;
 }
 
 #done-button-holder {
-	padding-bottom: 20px;
-	text-align:right;
+	padding: 0 5px 5px 0;
+	text-align: right;
 }
 
 #done-button {
 	font-size: 14px;
-	line-height:20px;
-	font-weight:bold;
+	font-weight: bold;
+	line-height: 20px;
 }
 
 
