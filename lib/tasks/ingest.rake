@@ -10,8 +10,8 @@ namespace :ingest do
 
 	end
 
-	task :ingest, [:name, :limit, :template]  => :environment do |t, args|
-		args.with_defaults(:limit => 1,:template=>"You Had Mail Template")
+	task :ingest, [:name, :start, :limit, :template]  => :environment do |t, args|
+		args.with_defaults(:start => 0, :limit => 1,:template=>"You Had Mail Template")
 
 		# puts "getting #{args.name}, from methods: #{self.class.methods}"
 
@@ -33,9 +33,12 @@ namespace :ingest do
 		archive.archive_constituents = constituents
 		archive.save!
 		puts "Processing archive with #{data[:collections].size} asset colls"
+		
+		data[:collections].shift(args.start.to_i)
 
+		processed = 0
 		data[:collections].each do |coll|
-			puts "  Processing coll with #{coll.size} images"
+			puts "Processing coll #{args.start.to_i + processed} with #{coll.size} images"
 
 			# Grab the first uuid to id the assetcoll
 			uuid = coll[0][:uri]
@@ -48,7 +51,6 @@ namespace :ingest do
 			collection.archive_id = archive.id
 			collection.save!
 
-			processed = 0
 			order = 0
 			coll.each do |asset|
 				puts "  Processing asset: #{asset[:uri]}"
@@ -60,46 +62,56 @@ namespace :ingest do
 				subdir = parts[1]
 				filename = parts[3]
 
-				puts "  Processing #{subdir}, #{filename}"
 				s3 = s3_client
 				bucket = s3.buckets['youhadmail.nypl.org']
 
-				# unless bucket.objects["#{subdir.sub(/-source/,'')}#{filename}"].exists?
-					local_file_path = "#{Rails.root}/tmp/out.jpg"
-					local_file = File.open(local_file_path,'wb') do |f|
-						f.puts bucket.objects["#{subdir}#{filename}"].read
-					end
+
+				# if deriv exists, skip resize
+				deriv_path = "#{subdir.sub(/-source/,'')}#{filename}"
+				if bucket.objects[deriv_path].exists?
+					puts "    Deriv exists in s3, skipping resizes"
+					local_path = self.localize_s3_asset deriv_path
+					i = Magick::ImageList.new(local_path).pop
+
+				# .. Otherwise, derivs must be generated:
+				else
+					puts "    Deriv DNE in s3; resizing"
+					
+					local_file_path = self.localize_s3_asset("#{subdir}#{filename}")
 
 					i = Magick::ImageList.new(local_file_path).pop
 
 					if i.columns > 1000
-						puts "  Resizing #{subdir}#{filename}"
+						puts "      Resizing #{subdir}#{filename}"
 						i.change_geometry!('1000x') do |cols, rows, img|
 							img.resize!(cols, rows)
 						end 
 						i.write local_file_path
 					end
 
+					# Upload deriv
 					subdir = subdir.sub /-source/, ''
 					bucket.objects["#{subdir}#{filename}"].write(:file => local_file_path, :acl => :public_read)
-					puts "  Wrote #{local_file_path} => #{subdir}#{filename}"
+					puts "      Wrote #{local_file_path} => #{subdir}#{filename}"
 
 
+					# Generate thumb
 					s3_thumb_path = "#{subdir}thumbs/#{filename}"
 					i.change_geometry!('170x') do |cols, rows, img|
 						img.resize!(cols, rows)
 					end 
 					i.write local_file_path
+					# Upload thumb
 					bucket.objects[s3_thumb_path].write(:file => local_file_path, :acl => :public_read)
-				# end
+				end
 
+				# Update Asset record
 				uri = asset[:uri].sub /-source/, ''
 				asset = Asset.find_or_create_by_uri uri
 				asset.width = i.columns
 				asset.height = i.rows
 				asset.order = order
 				asset.asset_collection = collection
-
 				asset.save
 
 				order += 1
@@ -113,6 +125,18 @@ namespace :ingest do
 
 	end
 
+	def self.localize_s3_asset(remote_path)
+		ext = File.extname(remote_path)
+		local_path = "#{Rails.root}/tmp/out#{ext}"
+
+		s3 = s3_client
+		bucket = s3.buckets['youhadmail.nypl.org']
+		local_file = File.open(local_path,'wb') do |f|
+			f.puts bucket.objects[remote_path].read
+		end
+		local_path
+	end
+
 	def archive_tilden
 		s3_base_path = 'images/tilden-source'
 		files = s3_list s3_base_path
@@ -120,7 +144,7 @@ namespace :ingest do
 		# puts "files: #{p filenames}"
 
 		require 'csv'
-		csv = CSV.read('/Users/paulbeaudoin/projects/zoonihack/assets/tilden-general/TildenGrouperTest.csv')
+		csv = CSV.read(self.localize_s3_asset("images/tilden-source/metadata.csv"))
 
 		colls = []
 
