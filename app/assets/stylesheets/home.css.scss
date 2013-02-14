@@ -257,7 +257,7 @@ h2 {
 
 .photo-stack {
 	width:150px;
-	height:240px;
+	height:215px;
 }
 
 .photo-stack img {
@@ -275,6 +275,8 @@ h2 {
 	-webkit-transition: all 0.2s ease; /* WebKit */
 	-o-transition: all 0.2s ease; /* Opera */
 	transition: all 0.2s ease; /* Standard */
+
+	max-height:180px;
 }
 
 /*
