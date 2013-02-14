@@ -11,8 +11,7 @@ var App = function() {
 App.prototype = {
 	init											: function() {
 															this._fetchData(this._handleData.bind(this));
-
-															$("#transcriptions-viewer").draggable()
+															// $("#transcriptions-viewer").draggable()
 	},
 
 	_handleData								: function(collection, template, annotations) {
