@@ -197,11 +197,7 @@ body#transcriptions_controller {
 }
 
 .zoom-box-controls {
-	overflow:hidden;
-	position:absolute;
-	right: 38px;
-	top: 10px;
-	width: 300px;
+	display: none;
 }
 
 .zoom-box-control span {
@@ -226,10 +222,9 @@ body#transcriptions_controller {
 /* Transcribe modal */
 
 div.transcribe-modal {
-	display:none;
-	position:absolute;
-	position:fixed;
-	-cursor:move;
+	display: none;
+	position: fixed;
+	-cursor: move;
 }
 
 div.transcribe-modal h1 {
@@ -245,21 +240,35 @@ div.transcribe-modal h1 span {
 }
 
 div.transcribe-form-top-bar {
-	padding:20px 0 0 20px
+	display: none;
 }
 
-div.transcribe-form-holder {
-	position:absolute;
-	top:0;
-	background-color:#FFF;
-	border:solid #555 1px;
-	@include box-shadow(3px, 4px, #000000);
-	@include rounded-corners(5px);
-	border:2px solid #2c2c2c;
+.transcribe-form-holder {
+	@include box-shadow(0, 20px, #000);
+	background: #f7f7f7;
+	border: 1px solid #e0e0e0;
+	position: relative;
 }
 
-div.transcribe-form {
+.transcribe-form {
+	border-left: 1px solid #fff;
+	box-sizing: border-box;
+	height: 100%;
 	padding: 0 20px 20px 20px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 50%;
+
+	&:before {
+		border-left: 1px solid #e2e2e2;
+		content: '';
+		left: -2px;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		width: 0;
+	}
 }
 
 div.modal-status-message {
@@ -268,71 +277,81 @@ div.modal-status-message {
 }
 
 div.delete-link {
-	padding-top:10px;
-	display:none;
+	display:none !important;
 }
 
 div.delete-link a {
 	color:$warn-color;
 }
 
-ul.entity-categories {
-	float:left;
-	width:150px;
+.entity-categories {
+	border-bottom: 1px solid #e5e5e5;
+	height: 38px;
+	margin-left: -20px;
+	overflow: hidden;
+	width: 400px;
+
+	li {
+		background: #efefef;
+		border-top: none;
+		cursor: pointer;
+		float: left;
+		font-size: 12px;
+		font-weight: 700;
+		height: 38px;
+		line-height: 38px;
+		min-width: 50px;
+		text-align: center;
+
+		&:hover {
+			background: #e0e0e0;
+		}
+
+		&.selected {
+			@include box-shadow(0, 10px, #888);
+			background: #f7f7f7;
+			border-top: #fff;
+			position: relative;
+		}
+	}
 }
 
-ul.entity-categories li {
-	height:50px;
-	font-size:17px;
-	line-height:50px;
-	background-repeat:no-repeat;
-	background-position:10px center;
-	padding-left:20px;
-	background-size:40px;
-	cursor:pointer;
-	background-color:#efefef;
-	border:solid #fff 1px;
-	border-right:none;
+.entity-submenus {
+	margin-left: -20px;
+	overflow: hidden;
+	top: 38px;
+	width: 400px;
 }
 
-ul.entity-categories li.selected {
-	background-color:#fff;
-	border:solid #999 1px;
-	border-right:none;
-	position:relative;
-	left:1px;
-}
+.entity-submenu {
+	border-bottom: 1px solid #e5e5e5;
+	display: none;
+	height: 38px;
 
-ul.entity-categories li:hover {
-	background-color:#fff;
-}
+	&.selected {
+		display: block;
+	}
 
-div.entity-submenus {
-	width:150px;
-	float:left;
-}
+	li {
+		background: #efefef;
+		cursor: pointer;
+		float: left;
+		font-weight: 700;
+		height: 38px;
+		line-height: 38px;
+		text-align: center;
 
-ul.entity-submenu {
-	display:none;
-	border:solid #999 1px;
-	min-height:100px;
-}
+		&:hover {
+			background: #fff;
+		}
 
-ul.entity-submenu.selected {
-	display:block;
+		&.selected {
+			@include box-shadow(0, 10px, #888);
+			background: #f7f7f7;
+			position: relative;
+		}
+	}
 }
-
-ul.entity-submenu li {
-	font-size:15px;
-	margin:5px;
-	padding:5px;
-	cursor:pointer;
-}
-
-ul.entity-submenu li.selected, ul.entity-submenu li:hover {
-	background-color:#efefef;
-}
-
 
 ul.transcribe-types {
 	list-style:none;
@@ -359,47 +378,46 @@ ul.entity-types li:hover .entity-type-choice-examples {
 }
 
 .transcribe-modal-close-button {
-	font-size:12px;
-	padding: 10px 10px 0 0;
-	position: absolute;
-	top:0;
-	right:0;
+	display: none;
 }
 
 div.transcribe-entity-fieldsets {
-	float:left;
-	width:500px;
-	margin-left:20px;
+	padding: 15px 0 0 0;
 }
 div.transcribe-field-row {
 	padding-bottom:8px;
-}
 
-div.transcribe-field-row label {
-	display:block;
-	padding-bottom:2px;
-}
+	label {
+		display: block;
+		font-weight: 700;
+		padding-bottom: 2px;
+	}
 
-div.transcribe-field-row input {
-	max-width:45%;
-	margin-bottom:5px;
+	input {
+		margin-bottom: 5px;
+		max-width: 45%;
+	}
 }
 
 div.transcribe-form-help {
-	float:right;
-	width:43%;
-	font-size:14px;
-	color:#555;
-	background-color:#efefef;
-	padding:20px;
-	max-height:180px;
-	overflow:auto;
+	background-color: #efefef;
+	bottom: 0;
+	box-sizing: border-box;
+	color: #555;
+	display: none; // for now
+	font-size: 12px;
+	left: 0;
+	max-height: 180px;
+	overflow: auto;
+	padding: 20px;
+	position: absolute;
+	width: 100%;
 }
 
 div.transcribe-form-help h2 {
-	margin-top:10px;
-	margin-bottom:5px;
-	font-size:20px;
+	font-size: 20px;
+	margin: 7px 0 3px 0;
+	padding: 0;
 }
 
 div.transcribe-form-help li {
@@ -414,15 +432,15 @@ div.transcribe-form-help a {
 }
 
 .darkening-overlay {
-	width:100%;
-	height:100%;
-	background-color:black;
-	opacity:0.5;
-	z-index:99;
-	position:absolute;
-	top:0;
-	left:0;
-	display:none;
+	background: #3b3b3b;
+	display: none;
+	height: 100%;
+	left: 0;
+	opacity: 0.76;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 99;
 }
 
 #transcribe-zoom-box-holder .ui-resizable-ne,
@@ -442,11 +460,12 @@ div.transcribe-form-help a {
 }
 
 #transcribe-zoom-box-holder {
+	background: #777;
+	border: 1px solid #e0e0e0;
+	max-width: 400px;
+	max-height: 250px;
+	overflow: hidden;
 	position: absolute;
-	background-color:#777;
-	max-height:300px;
-	overflow:hidden;
-	border:solid #555 1px;
 }
 
 #transcribe-zoom-box {
@@ -465,12 +484,34 @@ div.transcribe-form-help a {
 	display:none;
 }
 
-.save-button {
-	margin-top:10px;
+.save-button-bar {
+	bottom: 5px;
+	position: absolute;
+	right: 21px;
+
+	.save-button {
+		@include rounded-corners(2px);
+		background: #009af3;
+		border: 1px solid #005190;
+		box-shadow: inset 0 1px 0 0 #4db8f7;
+		color: #fff;
+		cursor: pointer;
+		font-size: 14px;
+		height: 28px;
+		margin: 0;
+		padding: 0;
+		text-shadow: 0 1px 1px #004e7b;
+		width: 78px;
+
+		&:hover {
+			background: #4db8f7;
+			box-shadow: inset 0 1px 0 0 lighten(#4db8f7, 10%);
+		}
+	}
 }
 
 .transcribe-form-next-after-add {
-	padding-left:10px;
+	display: none;
 }
 
 .transcribe-form-next-after-add label {
@@ -597,20 +638,20 @@ div.transcribe-form-help a {
 /* help */
 .transcribe-full-help {
 	padding: 0 20px 40px 20px;
-}
 
-.transcribe-full-help p {
-	padding: 10px 0;
-	line-height: 1.6em;
-}
+	h2 {
+		font-size: 20px;
+		margin-top: 1em;
+	}
 
-.transcribe-full-help h2 {
-	margin-top:1em;
-	font-size:20px;
-}
+	li {
+		padding-top: 10px;
+	}
 
-.transcribe-full-help li {
-	padding-top:10px;
+	p {
+		padding: 10px 0;
+		line-height: 1.6em;
+	}
 }
 
 #save-instructions {
