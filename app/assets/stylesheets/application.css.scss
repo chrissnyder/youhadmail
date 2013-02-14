@@ -28,6 +28,12 @@ $success-color: green;
 	box-shadow: $dist $dist $blur $color;
 }
 
+@mixin rotate($degree) {
+	-webkit-transform: rotate($degree);
+	-moz-transform: rotate($degree);
+	transform: rotate($degree);
+}
+
 @mixin clearfix() {
   &:after {
     content: "";

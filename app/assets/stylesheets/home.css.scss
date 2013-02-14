@@ -220,14 +220,9 @@ h2 {
   text-align:center;
 }
 
-.collection-list li img {
-  @include box-shadow(3px 3px 3px #777);
-  width :150px;
-  height: 194px;
-}
 
 .transcribe-link {
-  z-index:1;
+  z-index:100;
   position:absolute;
   top:50%;
   left:50%;
@@ -255,6 +250,73 @@ h2 {
 .leaflet-control-attribution {
   display:none;
 }
+
+
+/* photo stacks */
+
+.photo-stack {
+	width:150px;
+	height:240px;
+}
+
+.photo-stack img {
+  @include box-shadow(3px 3px 3px #777);
+
+	width: 130px;
+	position: absolute;
+	box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+	-moz-box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+	z-index: 9999;
+
+	/* setup transition speed and easing */
+	-moz-transition: all 0.2s ease; /* Firefox */
+	-webkit-transition: all 0.2s ease; /* WebKit */
+	-o-transition: all 0.2s ease; /* Opera */
+	transition: all 0.2s ease; /* Standard */
+}
+
+/*
+
+PB: Nah..
+@-webkit-keyframes shuffle {
+	0% {
+		margin-left: 0px;
+	}
+	50% {
+		margin-left: 450px;
+		-webkit-transform: scale(0.9);
+		-moz-transform: scale(0.9);
+		transform: scale(0.9);
+	}
+	100% {
+		margin-left: 0px;
+		-webkit-transform: scale(1);
+		-moz-transform: scale(1);
+		transform: scale(1);
+	}
+}
+.photo-stack .animate {
+	-webkit-animation-name: shuffle;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: 1;
+}
+*/
+
+.photo-stack {
+	.deg1 { @include rotate(1deg); }
+	.deg2 { @include rotate(2deg); }
+	.deg3 { @include rotate(3deg); }
+	.deg4 { @include rotate(4deg); }
+	.deg1neg { @include rotate(-1deg); }
+	.deg2neg { @include rotate(-2deg); }
+	.deg3neg { @include rotate(-3deg); }
+	.deg4neg { @include rotate(-4deg); }
+	img.current {
+		@include rotate(0deg);
+	}
+}
+
 
 #home_controller.welcome {
   background-image: image-url("dark-grey.jpg");

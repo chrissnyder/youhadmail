@@ -7,10 +7,15 @@
 	<% count = 0 %>
 	<% @collections.each do |collection| %>
 
-		
+		<% z = collection.assets.size %>
 		<li<% if count % 4 == 0 %> style="clear:left;"<% end %>>
-			<a href="/transcriptions/transcribe/<%= collection.id %>">
-				<%= image_tag(collection.assets.first.thumb_uri) %> 
+			<a href="/transcriptions/transcribe/<%= collection.id %>"> 
+				<div class="photo-stack">
+					<% collection.assets.each do |asset| %>
+						<%= image_tag(asset.thumb_uri, :style => "z-index:#{z}") %> 
+						<% z -= 1 %>
+					<% end %>
+				</div>
 			</a>
 			<div class="playbill-meta">
 				<div><%= collection.assets.size %> page<%= collection.assets.size!=1?'s':'' %></div>
