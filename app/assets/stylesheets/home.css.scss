@@ -64,7 +64,8 @@ html, body{
 	background-repeat: repeat;
 	display: inline-block;
 	height: 100%;
-	overflow-y: scroll;
+  overflow-x: hidden;
+	overflow-y: auto;
 	vertical-align: top;
 	width: 355px;
 }

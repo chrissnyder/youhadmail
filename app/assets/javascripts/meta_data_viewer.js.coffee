@@ -45,7 +45,7 @@ class MetaDataViewer
         @geoCode values.join(" "), (result)=>
           @addToMap(result)
 
-  addToMap:(role, location)=>
+  addToMap:(location)=>
     $(".metaPane.Maps").addClass("pulse")
     # Icon = L.Icon({ iconUrl: '/assets/marker-icon.png', shadowUrl: '/assets/marker-shadow.png'})
     marker = new L.Marker(location)
